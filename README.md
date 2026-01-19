@@ -1,4 +1,4 @@
-# Enhance Medical Education - MERN Stack
+# Medical LMS - Enhance Medical Education
 
 A full-stack medical education platform built with MongoDB, Express, React, and Node.js.
 
