@@ -11,10 +11,17 @@
     "server:install": "cd server && npm install",
     "client:install": "cd client && npm install"
   },
-  "keywords": ["medical", "education", "mern"],
+  "keywords": [
+    "medical",
+    "education",
+    "mern"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^8.2.0"
+  },
+  "dependencies": {
+    "react-icons": "^5.5.0"
   }
 }
