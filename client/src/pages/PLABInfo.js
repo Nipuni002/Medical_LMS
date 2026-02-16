@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -6,6 +6,56 @@ import './PLABInfo.css';
 
 function PLABInfo() {
   const navigate = useNavigate();
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchPlabContent();
+  }, []);
+
+  const fetchPlabContent = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/plab-content/what-is-plab');
+      const data = await response.json();
+      
+      if (data.success) {
+        setContent(data.data);
+      } else {
+        setError('Failed to load content');
+      }
+    } catch (err) {
+      console.error('Error fetching PLAB content:', err);
+      setError('Error loading content');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="plab-info">
+        <Header />
+        <div className="loading-container">
+          <div className="spinner"></div>
+          <p>Loading content...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !content) {
+    return (
+      <div className="plab-info">
+        <Header />
+        <div className="error-container">
+          <p>{error || 'Content not found'}</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="plab-info">
@@ -14,144 +64,25 @@ function PLABInfo() {
       {/* Compact Hero */}
       <div className="plab-info-compact-hero">
         <div className="compact-hero-content">
-          <h1>What is PLAB?</h1>
-          <p className="compact-hero-subtitle">Professional and Linguistic Assessments Board</p>
+          <h1>{content.title}</h1>
+          <p className="compact-hero-subtitle">{content.subtitle}</p>
         </div>
       </div>
 
       {/* Main Content - All in one view */}
       <div className="plab-info-compact-container">
-        
-        {/* Introduction Section */}
-        <div className="compact-intro-section">
-          <div className="compact-intro-card">
-            <div className="compact-intro-icon">🎯</div>
-            <p className="compact-intro-text">
-              The <strong>PLAB (Professional and Linguistic Assessments Board)</strong> test is the primary pathway for international 
-              medical graduates (IMGs) to demonstrate they have the necessary skills and knowledge to practice 
-              medicine in the UK.
-            </p>
-          </div>
-          <div className="compact-intro-card">
-            <div className="compact-intro-icon">⚖️</div>
-            <p className="compact-intro-text">
-              It ensures that international doctors are at the same level as UK doctors starting their second year of 
-              Foundation Programme training (F2).
-            </p>
-          </div>
-        </div>
 
-        {/* Comparison Section */}
-        <div className="compact-section-title">
-          <h2>PLAB 1 vs PLAB 2</h2>
-        </div>
-
-        <div className="compact-comparison-grid">
-          <div className="compact-comparison-col">
-            <div className="compact-comparison-header plab1">
-              <div className="comparison-badge">PLAB 1</div>
-              <h3>Written Examination</h3>
-            </div>
-            <div className="compact-comparison-details">
-              <div className="detail-row">
-                <span className="detail-label">Format</span>
-                <span className="detail-value">Written MCQ (180 questions)</span>
+        {/* Dynamic Sections */}
+        {content.sections && content.sections.length > 0 && (
+          <div className="content-sections">
+            {content.sections.sort((a, b) => a.order - b.order).map((section) => (
+              <div key={section._id} className="content-section-card">
+                <h3 className="section-heading">{section.heading}</h3>
+                <p className="section-content">{section.content}</p>
               </div>
-              <div className="detail-row">
-                <span className="detail-label">Focus</span>
-                <span className="detail-value">Clinical knowledge and application</span>
-              </div>
-              <div className="detail-row">
-                <span className="detail-label">Duration</span>
-                <span className="detail-value">3 hours</span>
-              </div>
-              <div className="detail-row">
-                <span className="detail-label">Location</span>
-                <span className="detail-value">Global centers</span>
-              </div>
-            </div>
+            ))}
           </div>
-
-          <div className="compact-comparison-col">
-            <div className="compact-comparison-header plab2">
-              <div className="comparison-badge">PLAB 2</div>
-              <h3>Practical Examination</h3>
-            </div>
-            <div className="compact-comparison-details">
-              <div className="detail-row">
-                <span className="detail-label">Format</span>
-                <span className="detail-value">OSCE (16 stations)</span>
-              </div>
-              <div className="detail-row">
-                <span className="detail-label">Focus</span>
-                <span className="detail-value">Clinical & communication skills</span>
-              </div>
-              <div className="detail-row">
-                <span className="detail-label">Duration</span>
-                <span className="detail-value">~3 hours</span>
-              </div>
-              <div className="detail-row">
-                <span className="detail-label">Location</span>
-                <span className="detail-value">Manchester, UK</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Requirements Section */}
-        <div className="compact-section-title">
-          <h2>The 4 Main Requirements</h2>
-        </div>
-
-        <div className="compact-requirements-grid">
-          <div className="compact-requirement">
-            <div className="requirement-number">1</div>
-            <div className="requirement-content">
-              <h4>Medical Degree</h4>
-              <p>MBBS recognized by the GMC</p>
-            </div>
-          </div>
-
-          <div className="compact-requirement">
-            <div className="requirement-number">2</div>
-            <div className="requirement-content">
-              <h4>English Proficiency</h4>
-              <p>IELTS 7.5 or OET Grade B</p>
-            </div>
-          </div>
-
-          <div className="compact-requirement">
-            <div className="requirement-number">3</div>
-            <div className="requirement-content">
-              <h4>GMC Registration</h4>
-              <p>Active GMC online account</p>
-            </div>
-          </div>
-
-          <div className="compact-requirement">
-            <div className="requirement-number">4</div>
-            <div className="requirement-content">
-              <h4>Professional Standing</h4>
-              <p>Good standing, no disciplinary issues</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Stats */}
-        <div className="compact-stats">
-          <div className="stat-item">
-            <div className="stat-value">4x/year</div>
-            <div className="stat-label">PLAB-1 Frequency</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-value">Year-round</div>
-            <div className="stat-label">PLAB-2 Schedule</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-value">3-6 months</div>
-            <div className="stat-label">Prep Time</div>
-          </div>
-        </div>
+        )}
 
       </div>
 
