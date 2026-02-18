@@ -2,7 +2,21 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f8fafc;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f8fafc 100%);
+  position: relative;
+}
+
+.plab1-theory::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 70%, rgba(124, 58, 237, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .theory-content {
@@ -11,16 +25,21 @@
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .theory-header {
-  background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 64, 175, 0.95) 100%);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: white;
   text-align: center;
   padding: 25px;
   border-radius: 12px;
   margin-bottom: 25px;
-  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.15);
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
 
 .main-title {
@@ -46,14 +65,17 @@
 }
 
 .info-card {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   padding: 8px 16px;
   border-radius: 8px;
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(120, 124, 202, 0.2);
 }
 
 .info-icon {
@@ -61,18 +83,23 @@
 }
 
 .search-container {
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .search-box {
   position: relative;
   display: flex;
   align-items: center;
-  background: #f8fafc;
+  background: rgba(248, 250, 252, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 2px solid #e2e8f0;
   border-radius: 10px;
   padding: 12px 16px;
@@ -81,8 +108,8 @@
 
 .search-box:focus-within {
   border-color: #3b82f6;
-  background: white;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 4px 12px rgba(59, 130, 246, 0.15);
 }
 
 .search-icon {
@@ -128,16 +155,21 @@
 }
 
 .compact-container {
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
 .exam-note {
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border: 1px solid #f59e0b;
-  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(254, 243, 199, 0.9) 0%, rgba(253, 230, 138, 0.9) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 10px;
   padding: 12px 16px;
   margin-bottom: 25px;
   display: flex;
@@ -145,6 +177,7 @@
   gap: 12px;
   font-size: 0.9rem;
   color: #92400e;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.15);
 }
 
 .note-icon {
@@ -170,7 +203,10 @@
 }
 
 .weightage-badge {
-  background: #3b82f6;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(37, 99, 235, 0.9));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(59, 130, 246, 0.3);
   color: white;
   padding: 6px 12px;
   border-radius: 20px;
@@ -179,6 +215,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
 .subject-count {
@@ -194,9 +231,11 @@
 }
 
 .subject-item {
-  background: white;
-  border: none;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
   padding: 14px 16px;
   cursor: pointer;
   text-align: left;
@@ -204,7 +243,7 @@
   display: flex;
   align-items: center;
   min-height: 56px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.4);
   position: relative;
   overflow: hidden;
   color: #ffffff;
@@ -217,14 +256,17 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
+  border-radius: 12px;
 }
 
 .subject-item:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .subject-item:hover::before {
@@ -233,7 +275,7 @@
 
 .subject-item:active {
   transform: translateY(-1px) scale(1.01);
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.4);
 }
 
 .subject-name {

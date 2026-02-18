@@ -88,7 +88,7 @@
   transform-style: preserve-3d;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 16px;
-  background: transparent;
+  background: white;
 }
 
 .subject-card:hover:not(.active) {
@@ -107,25 +107,22 @@
   border-radius: 16px;
   overflow: hidden;
   padding: 1.5rem;
-  box-shadow: 0 6px 28px rgba(16, 24, 40, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .card-front {
-  /* Frosted glass look */
-  background: rgba(255, 255, 255, 0.55);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  background: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  border: 1px solid #f3f4f6;
   transition: all 0.3s ease;
 }
 
 .subject-card:hover .card-front:not(.active) {
-  border-color: color-mix(in srgb, var(--subject-color) 40%, rgba(255,255,255,0));
-  box-shadow: 0 12px 40px rgba(16, 24, 40, 0.12);
+  border-color: var(--subject-color);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
 .card-pattern {
@@ -303,26 +300,12 @@
 
 /* Card Back (Expanded) */
 .card-back {
-  /* Slightly darker frosted back */
-  background: rgba(255, 255, 255, 0.42);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  background: white;
   transform: rotateY(180deg);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 2px solid var(--subject-color);
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-/* Subtle inner highlight for the glass edge */
-.subject-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 16px;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0));
-  mix-blend-mode: screen;
 }
 
 .close-btn {
