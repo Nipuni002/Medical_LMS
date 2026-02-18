@@ -11,43 +11,43 @@ function PLABMain() {
     {
       id: 1,
       title: 'What is PLAB?',
-      subtitle: 'Professional and Linguistic Assessments Board',
+      subtitle: 'Understanding the UK Medical Licensing Pathway',
       image: '/images/PLAB.png',
-      color: '#0A2463', // Dark blue
-      accentColor: '#3E92CC', // Light blue
-      path: '/plab/what-is-plab'
+      color: '#0A2463',
+      accentColor: '#2A6EBB',
+      path: '/plab/what-is-plab',
+      description: 'Complete guide to PLAB exam structure, GMC requirements, eligibility criteria, and registration process for international medical graduates.'
     },
     {
       id: 2,
-      title: 'Tips to get ready',
-      subtitle: 'Complete Guidance, Tips and Tricks',
-      image: '/images/tips.png',
+      title: 'PLAB 1',
+      subtitle: 'Written Exam Preparation',
+      image: '/images/PLAB-11.jpg',
       color: '#0A2463',
       accentColor: '#3E92CC',
-      path: '/plab/tips'
+      path: '/plab/plab1',
+      description: 'Master the 180 multiple-choice question format with comprehensive study materials, question banks, and proven preparation strategies.',
+      buttons: [
+        { label: 'Tips to get ready', color: '#2A6EBB', path: '/plab/plab1-tips' },
+        { label: 'Theory Bank', color: '#3E92CC', path: '/plab/plab1/theory' },
+        { label: 'Tests', color: '#4CA1D5', path: 'tests' },
+      ]
     },
     {
       id: 3,
-      title: 'Theory Bank',
-      subtitle: 'Comprehensive Study Materials',
-      image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80',
+      title: 'PLAB 2',
+      subtitle: 'Clinical Skills (OSCE) Preparation',
+      image: '/images/PLAB-2.png',
       color: '#0A2463',
-      accentColor: '#3E92CC',
-      path: '/plab/theory-bank'
-    },
-    {
-      id: 4,
-      title: 'Question Bank',
-      subtitle: 'Practice Questions for PLAB-1 & PLAB-2',
-      image: 'https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1376&q=80',
-      color: '#0A2463',
-      accentColor: '#3E92CC',
-      path: '/plab/question-bank',
+      accentColor: '#4CA1D5',
+      path: '/plab/plab2',
+      description: 'Prepare for the 16-station OSCE exam with clinical scenario simulations, communication skills training, and practical assessment guidance.',
       buttons: [
-        { label: 'PLAB-1', color: '#3c72e7', path: 'plab-1' },
-        { label: 'PLAB-2', color: '#16A085', path: 'plab-2' }
+        { label: 'Tips to get ready', color: '#2A6EBB', path: 'guide' },
+        { label: 'Theory Bank', color: '#3E92CC', path: 'cases' },
+        { label: 'Tests', color: '#4CA1D5', path: 'practice' },
       ]
-    }
+    },
   ];
 
   const handleSectionClick = (path) => {
@@ -56,7 +56,12 @@ function PLABMain() {
 
   const handleButtonClick = (sectionPath, buttonPath, e) => {
     e.stopPropagation();
-    navigate(`${sectionPath}/${buttonPath}`);
+    // Check if buttonPath is an absolute path (starts with /)
+    if (buttonPath.startsWith('/')) {
+      navigate(buttonPath);
+    } else {
+      navigate(`${sectionPath}/${buttonPath}`);
+    }
   };
 
   return (
@@ -64,22 +69,21 @@ function PLABMain() {
       <Header />
       
       <div className="plab-main-content">
-        {/* Hero Section */}
+        {/* Hero Section - Adjusted for proper spacing */}
         <div className="plab-hero-section">
           <div className="plab-hero-overlay">
             <div className="plab-hero-content">
               <h1>Professional and Linguistic Assessments Board (PLAB)</h1>
-              <p className="plab-hero-subtitle">The UK medical licensing examination for international doctors</p>
-              
+              <p className="plab-hero-subtitle">UK Medical Licensing Examination for International Medical Graduates</p>
             </div>
           </div>
         </div>
 
-        {/* Main Content Container - Everything in one view */}
+        {/* Main Content Container */}
         <div className="plab-unified-container">
           <div className="plab-unified-content">
-            <h2 className="section-title">PLAB Exam Resources</h2>
-            <p className="section-subtitle">Everything you need to prepare for the PLAB exams</p>
+            <h2 className="section-title">PLAB Exam Preparation</h2>
+            <p className="section-subtitle">Comprehensive resources for PLAB 1 & PLAB 2 success</p>
             
             {/* Sections Grid */}
             <div className="plab-sections-grid">
@@ -88,14 +92,22 @@ function PLABMain() {
                   key={section.id} 
                   className="plab-section-card"
                   onClick={() => handleSectionClick(section.path)}
-                  style={{ '--accent-color': section.accentColor }}
+                  style={{ 
+                    borderLeft: `4px solid ${section.accentColor}`,
+                    borderTop: `3px solid ${section.color}`
+                  }}
                 >
-                  <div className="plab-card-header" style={{ backgroundColor: section.color }}>
-                    <div className="card-icon">
+                  <div className="plab-card-header" style={{ 
+                    backgroundColor: section.color,
+                    borderBottom: `2px solid ${section.accentColor}`
+                  }}>
+                    <div className="card-icon" style={{ 
+                      backgroundColor: `${section.accentColor}40`,
+                      color: section.accentColor
+                    }}>
                       {section.id === 1 && '📋'}
-                      {section.id === 2 && '💡'}
-                      {section.id === 3 && '📚'}
-                      {section.id === 4 && '❓'}
+                      {section.id === 2 && '📝'}
+                      {section.id === 3 && '🏥'}
                     </div>
                     <div className="card-title-container">
                       <h3>{section.title}</h3>
@@ -105,25 +117,16 @@ function PLABMain() {
                   
                   <div className="plab-section-image">
                     <img src={section.image} alt={section.title} />
-                    <div className="image-overlay"></div>
+                    <div className="image-overlay" style={{ 
+                      background: `linear-gradient(to bottom, transparent 50%, ${section.color}15)`
+                    }}></div>
                   </div>
                   
                   <div className="plab-card-content">
-                    {section.id === 1 && (
-                      <p>Learn about the PLAB exam structure, requirements, and registration process for practicing medicine in the UK.</p>
-                    )}
-                    {section.id === 2 && (
-                      <p>Essential strategies, study plans, and practical advice to maximize your preparation efficiency.</p>
-                    )}
-                    {section.id === 3 && (
-                      <p>Comprehensive study materials covering all topics tested in the PLAB exams.</p>
-                    )}
-                    {section.id === 4 && (
-                      <p>Practice with thousands of questions from previous PLAB exams to test your knowledge.</p>
-                    )}
+                    <p>{section.description}</p>
                   </div>
                   
-                  {section.buttons ? (
+                  {section.buttons && (
                     <div className="plab-section-buttons">
                       {section.buttons.map((button, index) => (
                         <button 
@@ -131,23 +134,13 @@ function PLABMain() {
                           className="plab-button"
                           style={{ 
                             backgroundColor: button.color,
-                            border: `2px solid ${section.color}`
+                            color: 'white'
                           }}
                           onClick={(e) => handleButtonClick(section.path, button.path, e)}
                         >
                           {button.label}
                         </button>
                       ))}
-                    </div>
-                  ) : (
-                    <div className="plab-section-action">
-                      <button 
-                        className="plab-action-button"
-                        style={{ backgroundColor: section.color }}
-                        onClick={() => handleSectionClick(section.path)}
-                      >
-                        Explore
-                      </button>
                     </div>
                   )}
                 </div>
@@ -156,20 +149,20 @@ function PLABMain() {
 
             {/* Info Cards */}
             <div className="plab-info-section">
-              <div className="info-card" style={{ borderTop: '4px solid #0A2463' }}>
+              <div className="info-card" style={{ borderTop: '3px solid #0A2463' }}>
                 <div className="info-icon" style={{ color: '#0A2463' }}>🎯</div>
-                <h3>Exam Structure</h3>
-                <p>PLAB consists of two parts: PLAB-1 (written exam) and PLAB-2 (practical OSCE exam).</p>
+                <h3>Exam Format</h3>
+                <p>PLAB 1: 180 MCQs (3 hours) | PLAB 2: 16 OSCE stations</p>
               </div>
-              <div className="info-card" style={{ borderTop: '4px solid #2A6EBB' }}>
+              <div className="info-card" style={{ borderTop: '3px solid #2A6EBB' }}>
                 <div className="info-icon" style={{ color: '#2A6EBB' }}>📅</div>
-                <h3>Exam Dates</h3>
-                <p>PLAB-1 is held four times a year globally. PLAB-2 runs throughout the year in the UK.</p>
+                <h3>Test Centers</h3>
+                <p>PLAB 1: Global locations | PLAB 2: Manchester, UK only</p>
               </div>
-              <div className="info-card" style={{ borderTop: '4px solid #4CA1D5' }}>
-                <div className="info-icon" style={{ color: '#4CA1D5' }}>✅</div>
-                <h3>Eligibility</h3>
-                <p>You must have a primary medical qualification and the necessary English language skills.</p>
+              <div className="info-card" style={{ borderTop: '3px solid #3E92CC' }}>
+                <div className="info-icon" style={{ color: '#3E92CC' }}>✅</div>
+                <h3>Pass Rates</h3>
+                <p>Average pass rates: PLAB 1 (70%) | PLAB 2 (67%)</p>
               </div>
             </div>
           </div>

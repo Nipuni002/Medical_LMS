@@ -1,24 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Header.css';
 
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 20;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [scrolled]);
 
   const handleNavClick = (e, targetId, route = '/') => {
     e.preventDefault();
+    setMobileMenuOpen(false);
     
-    // If we're already on the home page, just scroll to the section
     if (location.pathname === '/' || location.pathname === '') {
       const element = document.querySelector(targetId);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     } else {
-      // Navigate to home page with section hash
       navigate(route + targetId);
-      // After navigation, scroll to the section
       setTimeout(() => {
         const element = document.querySelector(targetId);
         if (element) {
@@ -28,13 +40,44 @@ function Header() {
     }
   };
 
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const isHomePage = location.pathname === '/' || location.pathname === '';
+
   return (
-    <header className="header">
+    <header className={`header ${scrolled ? 'header-scrolled' : ''} ${!isHomePage ? 'header-light' : ''}`}>
       <div className="header-container">
-        <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-          <h1>Enhance Medical Education</h1>
+        <div className="logo" onClick={() => navigate('/')}>
+          <div className="logo-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="url(#gradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 17L12 22L22 17" stroke="url(#gradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 12L12 17L22 12" stroke="url(#gradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <defs>
+                <linearGradient id="gradient" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                  <stop stopColor={isHomePage ? "#001f5c" : "#ffffff"}/>
+                  <stop offset="1" stopColor={isHomePage ? "#0066cc" : "#e0f2fe"}/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div className="logo-text">
+            <span className="logo-main">
+              <span className="logo-enhance">Enhance</span>
+              <span className="logo-medical">Medical Education</span>
+            </span>
+          </div>
         </div>
-        <nav className="nav">
+
+        <button className={`mobile-menu-btn ${mobileMenuOpen ? 'active' : ''}`} onClick={toggleMobileMenu}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav className={`nav ${mobileMenuOpen ? 'nav-open' : ''}`}>
           <ul>
             <li><a href="#home" onClick={(e) => handleNavClick(e, '#home')}>Home</a></li>
             <li><a href="#about" onClick={(e) => handleNavClick(e, '#about')}>About Us</a></li>

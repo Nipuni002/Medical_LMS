@@ -1,0 +1,250 @@
+.plab1-tips {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #f5f7fa 0%, #c3cfe2 100%);
+  padding-top: 80px;
+}
+
+/* Hero Section */
+.tips-hero {
+  background: linear-gradient(135deg, #0A2463 0%, #3e92cc 100%);
+  padding: 60px 20px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.tips-hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.checkmark-icon {
+  width: 80px;
+  height: 80px;
+  background: #43e97b;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  margin: 0 auto 20px;
+  box-shadow: 0 4px 15px rgba(67, 233, 123, 0.3);
+}
+
+.tips-hero h1 {
+  font-size: 2.5rem;
+  margin: 0 0 15px 0;
+  font-weight: 800;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tips-subtitle {
+  font-size: 1.2rem;
+  font-style: italic;
+  opacity: 0.95;
+  margin: 0;
+}
+
+/* Tips Container */
+.tips-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+}
+
+/* Navigation Buttons */
+.tips-nav-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: -20px auto 30px;
+  max-width: 1000px;
+  padding: 0 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.tips-nav-btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.theory-btn {
+  background: linear-gradient(135deg, #f08000 0%, #ff9500 100%);
+}
+
+.theory-btn:hover {
+  background: linear-gradient(135deg, #ff9500 0%, #ffa726 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(240, 128, 0, 0.3);
+}
+
+.tests-btn {
+  background: linear-gradient(135deg, #3E92CC 0%, #4CA1D5 100%);
+}
+
+.tests-btn:hover {
+  background: linear-gradient(135deg, #4CA1D5 0%, #5fb3e6 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(62, 146, 204, 0.3);
+}
+
+.tips-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Individual Tip Section */
+.tip-section {
+  background: white;
+  border-radius: 15px;
+  padding: 35px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border-left: 5px solid #0A2463;
+}
+
+.tip-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 35px rgba(0, 0, 0, 0.12);
+}
+
+.tip-heading {
+  color: #0A2463;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e6e6e6;
+}
+
+.tip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tip-text {
+  color: #333;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Bullet Points */
+.tip-bullet {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.bullet-point {
+  color: #43e97b;
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.tip-bullet span:last-child {
+  color: #2c3e50;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+/* Loading and Error States */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: 40px;
+}
+
+.spinns-nav-buttons {
+    flex-direction: column;
+    gap: 10px;
+    margin: -15px auto 20px;
+  }
+
+  .tips-nav-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .tiper {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #0A2463;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-container p {
+  color: #ff6b6b;
+  font-size: 1.1rem;
+  margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .plab1-tips {
+    padding-top: 70px;
+  }
+
+  .tips-hero {
+    padding: 40px 20px;
+  }
+
+  .tips-hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .tips-subtitle {
+    font-size: 1rem;
+  }
+
+  .checkmark-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  }
+
+  .tips-container {
+    padding: 0 15px 40px;
+  }
+
+  .tip-section {
+    padding: 25px;
+  }
+
+  .tip-heading {
+    font-size: 1.3rem;
+  }
+
+  .tip-text,
+  .tip-bullet span:last-child {
+    font-size: 0.95rem;
+  }
+}
