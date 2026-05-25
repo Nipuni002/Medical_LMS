@@ -4,12 +4,35 @@ const PlabTheoryContent = require('../models/PlabTheoryContent');
 const PlabTheorySubject = require('../models/PlabTheorySubject');
 const { protect } = require('../middleware/auth');
 
+const normalizeExamType = (examType) => {
+  if (!examType) return 'PLAB_1';
+  return examType === 'PLAB_2' ? 'PLAB_2' : 'PLAB_1';
+};
+
+const getExamFilter = (examType) => {
+  if (examType === 'PLAB_2') {
+    return { examType: 'PLAB_2' };
+  }
+
+  // Keep older PLAB-1 records (without examType field) visible.
+  return {
+    $or: [
+      { examType: 'PLAB_1' },
+      { examType: { $exists: false } }
+    ]
+  };
+};
+
 // @route   GET /api/plab-theory-content
 // @desc    Get all theory content
 // @access  Public
 router.get('/', async (req, res) => {
   try {
-    const content = await PlabTheoryContent.find({ isPublished: true })
+    const examType = normalizeExamType(req.query.exam);
+    const content = await PlabTheoryContent.find({
+      isPublished: true,
+      ...getExamFilter(examType)
+    })
       .populate('subjectId', 'name weightage color')
       .sort({ createdAt: -1 });
     
@@ -25,9 +48,11 @@ router.get('/', async (req, res) => {
 // @access  Public
 router.get('/subject/:subjectId', async (req, res) => {
   try {
+    const examType = normalizeExamType(req.query.exam);
     const content = await PlabTheoryContent.findOne({ 
       subjectId: req.params.subjectId,
-      isPublished: true 
+      isPublished: true,
+      ...getExamFilter(examType)
     }).populate('subjectId', 'name weightage color weightageValue');
     
     if (!content) {
@@ -66,6 +91,7 @@ router.get('/:id', async (req, res) => {
 router.post('/', protect, async (req, res) => {
   try {
     const { subjectId, title, description, topics, isPublished } = req.body;
+    const requestedExamType = normalizeExamType(req.body.examType);
 
     // Validate required fields
     if (!subjectId || !title) {
@@ -84,8 +110,19 @@ router.post('/', protect, async (req, res) => {
       });
     }
 
+    const subjectExamType = subject.examType || 'PLAB_1';
+    if (subjectExamType !== requestedExamType) {
+      return res.status(400).json({
+        success: false,
+        message: 'Subject exam type does not match content exam type'
+      });
+    }
+
     // Check if content already exists for this subject
-    const existingContent = await PlabTheoryContent.findOne({ subjectId });
+    const existingContent = await PlabTheoryContent.findOne({
+      subjectId,
+      ...getExamFilter(requestedExamType)
+    });
     if (existingContent) {
       return res.status(400).json({ 
         success: false, 
@@ -94,6 +131,7 @@ router.post('/', protect, async (req, res) => {
     }
 
     const content = new PlabTheoryContent({
+      examType: requestedExamType,
       subjectId,
       title,
       description: description || '',
@@ -138,6 +176,9 @@ router.put('/:id', protect, async (req, res) => {
     if (description !== undefined) content.description = description;
     if (topics !== undefined) content.topics = topics;
     if (isPublished !== undefined) content.isPublished = isPublished;
+    if (req.body.examType !== undefined) {
+      content.examType = normalizeExamType(req.body.examType);
+    }
     content.updatedBy = req.user.id;
 
     await content.save();

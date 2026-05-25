@@ -460,3 +460,30 @@
   font-size: 1rem;
   margin: 0;
 }
+
+.section-content p {
+  margin: 0 0 10px;
+}
+
+.section-content h2,
+.section-content h3,
+.section-content h4 {
+  color: #0A2463;
+  margin: 8px 0;
+  line-height: 1.35;
+}
+
+.section-content ul,
+.section-content ol {
+  margin: 0 0 12px 22px;
+  padding: 0;
+}
+
+.section-content li {
+  margin: 4px 0;
+}
+
+.section-content a {
+  color: #2A6EBB;
+  text-decoration: underline;
+}

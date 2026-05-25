@@ -4,12 +4,6 @@ import './AdminDashboard.css';
 const AdminDashboard = () => {
   const [user, setUser] = useState(null);
   const [activeSection, setActiveSection] = useState('overview');
-  const [stats, setStats] = useState({
-    totalUsers: 0,
-    totalCourses: 0,
-    activeStudents: 0,
-    instructors: 0
-  });
 
   useEffect(() => {
     // Get user from localStorage
@@ -21,33 +15,12 @@ const AdminDashboard = () => {
       window.location.href = '/admin/login';
     }
 
-    // Fetch dashboard stats
-    fetchDashboardStats();
-  }, []);
-
-  const fetchDashboardStats = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/users', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        const users = data.data;
-        setStats({
-          totalUsers: users.length,
-          totalCourses: 0,
-          activeStudents: users.filter(u => u.role === 'student').length,
-          instructors: users.filter(u => u.role === 'instructor').length
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching stats:', error);
+    const params = new URLSearchParams(window.location.search);
+    const sectionParam = params.get('section');
+    if (sectionParam === 'plab-admin' || sectionParam === 'usmle-admin' || sectionParam === 'amc-admin' || sectionParam === 'website-admin' || sectionParam === 'subjects-content-admin' || sectionParam === 'overview') {
+      setActiveSection(sectionParam);
     }
-  };
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -56,27 +29,183 @@ const AdminDashboard = () => {
   };
 
   const menuItems = [
-    { id: 'overview', label: 'Dashboard Overview', icon: '📊' },
-    { id: 'theory-subjects', label: 'Manage Theory Subjects', icon: '📚' },
-    { id: 'theory-content', label: 'Manage Theory Content', icon: '📖' },
-    { id: 'what-is-plab', label: 'What is PLAB', icon: '📝' },
-    { id: 'plab1-tips', label: 'PLAB 1 Tips', icon: '💡' },
-    { id: 'manage-plab', label: 'Manage PLAB', icon: '🎓' }
+    { id: 'overview', label: 'Course Dashboard', icon: '🏠' },
+    { id: 'plab-admin', label: 'PLAB Admin Section', icon: '🎯' },
+    { id: 'usmle-admin', label: 'USMLE Admin Section', icon: '🩺' },
+    { id: 'amc-admin', label: 'AMC Admin Section', icon: '🇦🇺' },
+    { id: 'subjects-content-admin', label: 'Subjects & Content (All)', icon: '🧩' },
+    { id: 'website-admin', label: 'Website Admin Section', icon: '🌐' }
   ];
 
   const handleNavigation = (sectionId) => {
     if (sectionId === 'theory-subjects') {
       window.location.href = '/admin/theory-subjects';
     } else if (sectionId === 'theory-content') {
-      window.location.href = '/admin/theory-content';
+      window.location.href = '/admin/subjects-content?category=plab';
     } else if (sectionId === 'what-is-plab') {
       window.location.href = '/admin/plab-content';
     } else if (sectionId === 'plab1-tips') {
       window.location.href = '/admin/plab1-tips';
+    } else if (sectionId === 'plab2-guide') {
+      window.location.href = '/admin/plab2-guide';
+    } else if (sectionId === 'plab2-pretest') {
+      window.location.href = '/admin/plab2-pretest';
+    } else if (sectionId === 'plab1-tests') {
+      window.location.href = '/admin/plab1-tests';
+    } else if (sectionId === 'usmle-subjects') {
+      window.location.href = '/admin/usmle-subjects';
+    } else if (sectionId === 'usmle-content') {
+      window.location.href = '/admin/usmle-content';
+    } else if (sectionId === 'usmle-introduction') {
+      window.location.href = '/admin/usmle-content/introduction';
+    } else if (sectionId === 'usmle-step1-pretest') {
+      window.location.href = '/admin/usmle-step1-pretest';
+    } else if (sectionId === 'usmle-step2-pretest') {
+      window.location.href = '/admin/usmle-step2-pretest';
+    } else if (sectionId === 'usmle-step3-pretest') {
+      window.location.href = '/admin/usmle-step3-pretest';
+    } else if (sectionId === 'amc-subjects') {
+      window.location.href = '/admin/amc-subjects';
+    } else if (sectionId === 'amc-content') {
+      window.location.href = '/admin/amc-content';
+    } else if (sectionId === 'amc-step1-pretest') {
+      window.location.href = '/admin/amc-step1-pretest';
+    } else if (sectionId === 'amc-step2-pretest') {
+      window.location.href = '/admin/amc-step2-pretest';
+    } else if (sectionId === 'all-subjects-content') {
+      window.location.href = '/admin/subjects-content';
+    } else if (sectionId === 'all-subjects-content-plab') {
+      window.location.href = '/admin/subjects-content?category=plab';
+    } else if (sectionId === 'all-subjects-content-usmle') {
+      window.location.href = '/admin/subjects-content?category=usmle';
+    } else if (sectionId === 'all-subjects-content-amc') {
+      window.location.href = '/admin/subjects-content?category=amc';
+    } else if (sectionId === 'about-content') {
+      window.location.href = '/admin/about-content';
+    } else if (sectionId === 'contact-content') {
+      window.location.href = '/admin/contact-content';
     } else {
       setActiveSection(sectionId);
     }
   };
+
+  const courseSections = [
+    {
+      id: 'plab',
+      title: 'PLAB',
+      icon: '🎓',
+      description: 'PLAB learning path and core exam preparation content.',
+      route: '/exams/plab',
+      accent: 'course-plab'
+    },
+    {
+      id: 'usmle',
+      title: 'USMLE',
+      icon: '🩺',
+      description: 'USMLE sections, topics, and navigation for Step preparation.',
+      route: '/exams/usmle',
+      accent: 'course-usmle'
+    },
+    {
+      id: 'amc',
+      title: 'AMC',
+      icon: '🇦🇺',
+      description: 'AMC course page and exam-specific study resources.',
+      route: '/exams/amc',
+      accent: 'course-amc'
+    }
+  ];
+
+  const plabAdminItems = [
+    {
+      id: 'what-is-plab',
+      title: 'What is PLAB',
+      icon: '📝',
+      description: 'Edit the PLAB introduction and overview information.'
+    },
+    {
+      id: 'plab1-tips',
+      title: 'PLAB 1 Tips',
+      icon: '💡',
+      description: 'Manage exam tips, strategy notes, and quick guidance.'
+    },
+    {
+      id: 'plab2-guide',
+      title: 'PLAB-2 Guide',
+      icon: '🩺',
+      description: 'Add, update, and delete sections for the Guide to PLAB-2 page.'
+    },
+    {
+      id: 'plab2-pretest',
+      title: 'PLAB-2 Pretest Scenarios',
+      icon: '🎭',
+      description: 'Add scenario questions and ideal answers shown in the PLAB-2 pretest page.'
+    },
+    {
+      id: 'plab1-tests',
+      title: 'PLAB-1 Tests',
+      icon: '✅',
+      description: 'Create and manage timed SBA questions for the PLAB-1 test page.'
+    }
+  ];
+
+  const usmleAdminItems = [
+    {
+      id: 'usmle-introduction',
+      title: 'USMLE Step 1 Introduction',
+      icon: '📘',
+      description: 'Add and update content for the user-facing Step 1 Introduction page.'
+    },
+    {
+      id: 'usmle-step1-pretest',
+      title: 'USMLE Step 1 Pre-Test',
+      icon: '🧪',
+      description: 'Add 7-block exam questions with options, correct answers, and explanations.'
+    },
+    {
+      id: 'usmle-step2-pretest',
+      title: 'USMLE Step 2 CK Pre-Test',
+      icon: '🧪',
+      description: 'Add 8-block exam questions with options, correct answers, and explanations.'
+    },
+    {
+      id: 'usmle-step3-pretest',
+      title: 'USMLE Step 3 Pre-Test',
+      icon: '🧪',
+      description: 'Add Day 1 and Day 2 questions separately with options, correct answers, and explanations.'
+    }
+  ];
+
+  const amcAdminItems = [
+    {
+      id: 'amc-step1-pretest',
+      title: 'AMC Step 1 Pretest (CAT)',
+      icon: '🧪',
+      description: 'Add and publish Step 1 best-of-four questions, correct answers, and explanations.'
+    }
+    ,
+    {
+      id: 'amc-step2-pretest',
+      title: 'AMC Step 2 Pretest (OSCE)',
+      icon: '🎯',
+      description: 'Add and publish Step 2 stations, marking notes, and optional images.'
+    }
+  ];
+
+  const websiteAdminItems = [
+    {
+      id: 'about-content',
+      title: 'Manage About Us',
+      icon: 'ℹ️',
+      description: 'Add, update, and remove About Us section details shown on the home page.'
+    },
+    {
+      id: 'contact-content',
+      title: 'Manage Contact Us',
+      icon: '📞',
+      description: 'Add, update, and remove Contact Us resources, FAQ, and support details.'
+    }
+  ];
 
   if (!user) {
     return <div className="loading">Loading...</div>;
@@ -122,116 +251,170 @@ const AdminDashboard = () => {
       <main className="main-content">
         <header className="content-header">
           <h1>Welcome back, {user.name}!</h1>
-          <p className="subtitle">Manage your medical learning management system</p>
+          <p className="subtitle">Manage your course sections and PLAB content in one place</p>
         </header>
 
-        {activeSection === 'overview' && (
+        {(activeSection === 'overview' || activeSection === 'courses') && (
           <div className="overview-section">
-            <div className="stats-grid">
-              <div className="stat-card">
-                <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-                  <span>👥</span>
-                </div>
-                <div className="stat-content">
-                  <h3>{stats.totalUsers}</h3>
-                  <p>Total Users</p>
-                </div>
-              </div>
-
-              <div className="stat-card">
-                <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
-                  <span>📚</span>
-                </div>
-                <div className="stat-content">
-                  <h3>{stats.totalCourses}</h3>
-                  <p>Total Courses</p>
-                </div>
-              </div>
-
-              <div className="stat-card">
-                <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }}>
-                  <span>🎓</span>
-                </div>
-                <div className="stat-content">
-                  <h3>{stats.activeStudents}</h3>
-                  <p>Active Students</p>
-                </div>
-              </div>
-
-              <div className="stat-card">
-                <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' }}>
-                  <span>👨‍🏫</span>
-                </div>
-                <div className="stat-content">
-                  <h3>{stats.instructors}</h3>
-                  <p>Instructors</p>
-                </div>
-              </div>
+            <div className="section-title-wrap">
+              <h2>4 Course Sections</h2>
+              <p>Open and review each course experience directly from admin.</p>
             </div>
 
-            <div className="quick-access">
-              <h2>Quick Access</h2>
-              <div className="quick-access-grid">
-                <div className="access-card" onClick={() => handleNavigation('theory-subjects')}>
-                  <div className="access-icon">📚</div>
-                  <h3>Theory Subjects</h3>
-                  <p>Manage course content</p>
+            <div className="course-sections-grid">
+              {courseSections.map((course) => (
+                <div key={course.id} className={`course-section-card ${course.accent}`}>
+                  <div className="course-header">
+                    <span className="course-icon">{course.icon}</span>
+                    <h3>{course.title}</h3>
+                  </div>
+                  <p>{course.description}</p>
+                  <button
+                    className="card-action"
+                    onClick={() => {
+                      if (course.id === 'plab') {
+                        handleNavigation('plab-admin');
+                      } else if (course.id === 'amc') {
+                        handleNavigation('usmle-admin');
+                      } else {
+                        window.location.href = course.route;
+                      }
+                    }}
+                  >
+                    {(course.id === 'plab' || course.id === 'usmle' || course.id === 'amc') ? 'Open Admin →' : 'Open Course →'}
+                  </button>
                 </div>
-                <div className="access-card" onClick={() => handleNavigation('what-is-plab')}>
-                  <div className="access-icon">📝</div>
-                  <h3>What is PLAB</h3>
-                  <p>Edit PLAB information</p>
+              ))}
+            </div>
+
+            <div className="section-title-wrap">
+              <h2>Website Sections</h2>
+              <p>Manage public home page website content directly.</p>
+            </div>
+
+            <div className="plab-management-grid">
+              {websiteAdminItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="management-card"
+                  onClick={() => handleNavigation(item.id)}
+                >
+                  <div className="card-header">
+                    <span className="card-icon">{item.icon}</span>
+                    <h3>{item.title}</h3>
+                  </div>
+                  <p>{item.description}</p>
+                  <button className="card-action">Manage →</button>
                 </div>
-                <div className="access-card" onClick={() => handleNavigation('plab1-tips')}>
-                  <div className="access-icon">💡</div>
-                  <h3>PLAB 1 Tips</h3>
-                  <p>Manage exam tips</p>
-                </div>
-                <div className="access-card" onClick={() => handleNavigation('manage-plab')}>
-                  <div className="access-icon">🎓</div>
-                  <h3>Manage PLAB</h3>
-                  <p>PLAB management hub</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         )}
 
-        {activeSection === 'manage-plab' && (
+        {activeSection === 'plab-admin' && (
           <div className="manage-plab-section">
-            <h2>Manage PLAB</h2>
+            <h2>PLAB Admin Section</h2>
             <div className="plab-management-grid">
-              <div className="management-card" onClick={() => handleNavigation('what-is-plab')}>
-                <div className="card-header">
-                  <span className="card-icon">📝</span>
-                  <h3>PLAB Content</h3>
+              {plabAdminItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="management-card"
+                  onClick={() => handleNavigation(item.id)}
+                >
+                  <div className="card-header">
+                    <span className="card-icon">{item.icon}</span>
+                    <h3>{item.title}</h3>
+                  </div>
+                  <p>{item.description}</p>
+                  <button className="card-action">Manage →</button>
                 </div>
-                <p>Edit "What is PLAB" section content</p>
-                <button className="card-action">Manage →</button>
-              </div>
-              <div className="management-card" onClick={() => handleNavigation('plab1-tips')}>
-                <div className="card-header">
-                  <span className="card-icon">💡</span>
-                  <h3>PLAB 1 Tips</h3>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeSection === 'usmle-admin' && (
+          <div className="manage-plab-section">
+            <h2>USMLE Admin Section</h2>
+            <p className="subtitle">Subjects and subject content are available from the sidebar under Subjects &amp; Content (All).</p>
+            <div className="plab-management-grid">
+              {usmleAdminItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="management-card"
+                  onClick={() => handleNavigation(item.id)}
+                >
+                  <div className="card-header">
+                    <span className="card-icon">{item.icon}</span>
+                    <h3>{item.title}</h3>
+                  </div>
+                  <p>{item.description}</p>
+                  <button className="card-action">Manage →</button>
                 </div>
-                <p>Manage tips and guidance for PLAB 1 exam</p>
-                <button className="card-action">Manage →</button>
-              </div>
-              <div className="management-card" onClick={() => handleNavigation('theory-subjects')}>
-                <div className="card-header">
-                  <span className="card-icon">📚</span>
-                  <h3>Theory Subjects</h3>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeSection === 'amc-admin' && (
+          <div className="manage-plab-section">
+            <h2>AMC Admin Section</h2>
+            <p className="subtitle">Subjects and subject content are available from the sidebar under Subjects &amp; Content (All).</p>
+            <div className="plab-management-grid">
+              {amcAdminItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="management-card"
+                  onClick={() => handleNavigation(item.id)}
+                >
+                  <div className="card-header">
+                    <span className="card-icon">{item.icon}</span>
+                    <h3>{item.title}</h3>
+                  </div>
+                  <p>{item.description}</p>
+                  <button className="card-action">Manage →</button>
                 </div>
-                <p>Manage PLAB theory subjects and topics</p>
-              <div className="management-card" onClick={() => handleNavigation('theory-content')}>
-                <div className="card-header">
-                  <span className="card-icon">📖</span>
-                  <h3>Theory Content</h3>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeSection === 'website-admin' && (
+          <div className="manage-plab-section">
+            <h2>Website Admin Section</h2>
+            <div className="plab-management-grid">
+              {websiteAdminItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="management-card"
+                  onClick={() => handleNavigation(item.id)}
+                >
+                  <div className="card-header">
+                    <span className="card-icon">{item.icon}</span>
+                    <h3>{item.title}</h3>
+                  </div>
+                  <p>{item.description}</p>
+                  <button className="card-action">Manage →</button>
                 </div>
-                <p>Add detailed content and videos for subjects</p>
-                <button className="card-action">Manage →</button>
-              </div>
-                <button className="card-action">Manage →</button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeSection === 'subjects-content-admin' && (
+          <div className="manage-plab-section">
+            <h2>Unified Subjects & Content</h2>
+            <div className="plab-management-grid">
+              <div
+                className="management-card"
+                onClick={() => handleNavigation('all-subjects-content')}
+              >
+                <div className="card-header">
+                  <span className="card-icon">🧩</span>
+                  <h3>All Categories: Subjects + Content</h3>
+                </div>
+                <p>Manage PLAB (PLAB-1 + PLAB-2 Theory Bank), USMLE, AMC, and NExT subjects in one page and open subject content editor directly.</p>
+                <button className="card-action">Open →</button>
               </div>
             </div>
           </div>

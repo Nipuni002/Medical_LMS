@@ -1,40 +1,88 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import './ContactSection.css';
 
 function ContactSection() {
-  const freeResources = [
+  const [title, setTitle] = useState('Contact Us');
+  const [subtitle, setSubtitle] = useState('Access free medical education resources and support');
+  const [supportHeading, setSupportHeading] = useState('Educational Support');
+  const [supportEmail, setSupportEmail] = useState('education@enhancemedical.com');
+  const [freeResources, setFreeResources] = useState([
     {
       title: 'Free Study Materials',
-      description: 'Comprehensive library of medical study resources'
+      description: 'Comprehensive library of medical study resources',
+      order: 1
     },
     {
       title: 'Practice Questions',
-      description: 'Thousands of free questions for medical exams'
-    },
-  ];
-
-  const faqs = [
+      description: 'Thousands of free questions for medical exams',
+      order: 2
+    }
+  ]);
+  const [faqs, setFaqs] = useState([
     {
       question: 'Are all courses free?',
-      answer: 'Yes! All medical education courses and materials are completely free.'
+      answer: 'Yes! All medical education courses and materials are completely free.',
+      order: 1
     },
     {
       question: 'How do I access resources?',
-      answer: 'Browse our website - all materials are available instantly without registration.'
+      answer: 'Browse our website - all materials are available instantly without registration.',
+      order: 2
     },
     {
       question: 'Can I download materials?',
-      answer: 'Yes, most materials are available for download in PDF format.'
-    },
-  ];
+      answer: 'Yes, most materials are available for download in PDF format.',
+      order: 3
+    }
+  ]);
+
+  useEffect(() => {
+    const fetchContactContent = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/contact-content/home-contact');
+        if (!response.ok) {
+          return;
+        }
+
+        const data = await response.json();
+        if (data.success && data.data) {
+          setTitle(data.data.title || 'Contact Us');
+          setSubtitle(data.data.subtitle || 'Access free medical education resources and support');
+          setSupportHeading(data.data.supportHeading || 'Educational Support');
+          setSupportEmail(data.data.supportEmail || 'education@enhancemedical.com');
+
+          if (Array.isArray(data.data.freeResources) && data.data.freeResources.length > 0) {
+            setFreeResources(
+              [...data.data.freeResources].sort((a, b) => (a.order || 0) - (b.order || 0))
+            );
+          }
+
+          if (Array.isArray(data.data.faqs) && data.data.faqs.length > 0) {
+            setFaqs(
+              [...data.data.faqs].sort((a, b) => (a.order || 0) - (b.order || 0))
+            );
+          }
+        }
+      } catch (error) {
+        console.error('Error loading Contact Us content:', error);
+      }
+    };
+
+    fetchContactContent();
+  }, []);
+
+  const supportEmailHref = useMemo(() => {
+    if (!supportEmail) return 'mailto:education@enhancemedical.com';
+    return `mailto:${supportEmail}`;
+  }, [supportEmail]);
 
   return (
     <section className="contact-section" id="contact">
       <div className="contact-container">
         <div className="contact-header">
-          <h2>Contact Us</h2>
+          <h2>{title}</h2>
           <p className="section-subtitle">
-            Access free medical education resources and support
+            {subtitle}
           </p>
         </div>
 
@@ -57,9 +105,9 @@ function ContactSection() {
               <div className="contact-method">
                 <div className="method-icon">📧</div>
                 <div>
-                  <h4>Educational Support</h4>
-                  <a href="mailto:education@enhancemedical.com" className="contact-email">
-                    education@enhancemedical.com
+                  <h4>{supportHeading}</h4>
+                  <a href={supportEmailHref} className="contact-email">
+                    {supportEmail}
                   </a>
                 </div>
               </div>

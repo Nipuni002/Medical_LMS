@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import './TheorySubjectDetail.css';
@@ -7,13 +7,49 @@ import './TheorySubjectDetail.css';
 function TheorySubjectDetail() {
   const { subjectId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTopicIndex, setActiveTopicIndex] = useState(0);
 
+  const isPlab2Route = location.pathname.startsWith('/plab/plab2/theory');
+  const examType = isPlab2Route ? 'PLAB_2' : 'PLAB_1';
+  const theoryListPath = isPlab2Route ? '/plab/plab2/theory' : '/plab/plab1/theory';
+
+  const sanitizeHtml = (html = '') => {
+    if (!html) return '';
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    doc.querySelectorAll('script, iframe, object, embed, form').forEach((element) => {
+      element.remove();
+    });
+
+    doc.querySelectorAll('*').forEach((element) => {
+      Array.from(element.attributes).forEach((attribute) => {
+        const attributeName = attribute.name.toLowerCase();
+        const attributeValue = attribute.value.toLowerCase();
+
+        if (attributeName.startsWith('on') || attributeValue.includes('javascript:')) {
+          element.removeAttribute(attribute.name);
+        }
+      });
+    });
+
+    return doc.body.innerHTML;
+  };
+
+  const activeTopic = content?.topics?.[activeTopicIndex];
+  const activeTopicContentHtml = useMemo(
+    () => sanitizeHtml(activeTopic?.content || ''),
+    [activeTopic?.content]
+  );
+
   const handleDownloadPDF = () => {
     const topic = content.topics[activeTopicIndex];
+    const topicContentHtml = sanitizeHtml(topic.content || '');
     
     // Create a hidden iframe for printing
     const iframe = document.createElement('iframe');
@@ -107,12 +143,7 @@ function TheorySubjectDetail() {
           </div>
           
           <div class="content-section">
-            ${topic.content.split('\n').map(para => {
-              if (para.trim()) {
-                return `<p>${para.trim()}</p>`;
-              }
-              return '';
-            }).join('')}
+            ${topicContentHtml}
           </div>
           
           <div class="document-footer">
@@ -143,12 +174,12 @@ function TheorySubjectDetail() {
 
   useEffect(() => {
     fetchContent();
-  }, [subjectId]);
+  }, [subjectId, examType]);
 
   const fetchContent = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/plab-theory-content/subject/${subjectId}`
+        `http://localhost:5000/api/plab-theory-content/subject/${subjectId}?exam=${examType}`
       );
       const result = await response.json();
 
@@ -245,7 +276,7 @@ function TheorySubjectDetail() {
           <div className="error-icon">⚠️</div>
           <h2>No Content Available</h2>
           <p>{error}</p>
-          <button onClick={() => navigate('/plab1-theory')} className="back-btn">
+          <button onClick={() => navigate(theoryListPath)} className="back-btn">
             ← Back to Theory Subjects
           </button>
         </div>
@@ -311,19 +342,19 @@ function TheorySubjectDetail() {
 
               {/* Topic Content Display */}
               <div className="topic-content-display">
-                {content.topics[activeTopicIndex] && (
+                {activeTopic && (
                   <div className="topic-detail">
                     <div className="topic-detail-header">
-                      <h2>{content.topics[activeTopicIndex].title}</h2>
+                      <h2>{activeTopic.title}</h2>
                     </div>
 
                     {/* Video Player */}
-                    {content.topics[activeTopicIndex].videoLink && (
+                    {activeTopic.videoLink && (
                       <div className="video-container">
-                        {getVideoEmbedUrl(content.topics[activeTopicIndex].videoLink) ? (
+                        {getVideoEmbedUrl(activeTopic.videoLink) ? (
                           <iframe
-                            src={getVideoEmbedUrl(content.topics[activeTopicIndex].videoLink)}
-                            title={content.topics[activeTopicIndex].title}
+                            src={getVideoEmbedUrl(activeTopic.videoLink)}
+                            title={activeTopic.title}
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
@@ -332,37 +363,49 @@ function TheorySubjectDetail() {
                           <div className="video-link-fallback">
                             <p>Video available at:</p>
                             <a 
-                              href={content.topics[activeTopicIndex].videoLink}
+                              href={activeTopic.videoLink}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="external-video-link"
                             >
-                              {content.topics[activeTopicIndex].videoLink}
+                              {activeTopic.videoLink}
                             </a>
                           </div>
                         )}
                       </div>
                     )}
 
-                    {/* Download Button */}
-                    <div className="download-section">
+                    {/* Action Buttons Section */}
+                    <div className="action-buttons-section">
+                      {/* Revise Questions Button */}
+                      <button
+                        onClick={() => navigate(`/questions/${subjectId}`)}
+                        className="revise-questions-btn"
+                      >
+                        <span className="btn-icon">📝</span>
+                        <span className="btn-text">Revise Questions</span>
+                        <span className="btn-arrow">→</span>
+                      </button>
+                      
+                      {/* Download Button */}
                       <button onClick={handleDownloadPDF} className="pdf-download-btn" title="Download topic as PDF">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                           <polyline points="7 10 12 15 17 10"></polyline>
                           <line x1="12" y1="15" x2="12" y2="3"></line>
                         </svg>
-                        Download PDF
+                        Download Notes
                       </button>
                     </div>
 
                     {/* Topic Content */}
                     <div className="topic-text-content">
-                      <div className="content-text">
-                        {content.topics[activeTopicIndex].content.split('\n').map((paragraph, idx) => (
-                          paragraph.trim() && <p key={idx}>{paragraph}</p>
-                        ))}
-                      </div>
+                      <div
+                        className="content-text"
+                        dangerouslySetInnerHTML={{
+                          __html: activeTopicContentHtml || '<p>No content available.</p>'
+                        }}
+                      />
                     </div>
 
                     {/* Navigation Buttons */}

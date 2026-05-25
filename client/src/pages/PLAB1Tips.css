@@ -134,6 +134,41 @@
   gap: 12px;
 }
 
+.tip-content p {
+  color: #333;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin: 0 0 10px;
+  font-weight: 500;
+}
+
+.tip-content h2,
+.tip-content h3,
+.tip-content h4 {
+  color: #0A2463;
+  margin: 8px 0;
+  line-height: 1.35;
+}
+
+.tip-content ul,
+.tip-content ol {
+  margin: 0 0 12px 22px;
+  padding: 0;
+}
+
+.tip-content li {
+  color: #2c3e50;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin: 4px 0;
+  font-weight: 500;
+}
+
+.tip-content a {
+  color: #2A6EBB;
+  text-decoration: underline;
+}
+
 .tip-text {
   color: #333;
   font-size: 1.05rem;

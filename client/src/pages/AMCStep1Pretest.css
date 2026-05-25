@@ -1,0 +1,127 @@
+.amc-step1-pretest-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 52%, #ffffff 100%);
+}
+
+.amc-step1-pretest-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  margin-top: 84px;
+  padding: 22px 24px 72px;
+}
+
+.amc-step1-pretest-hero {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.amc-step1-pretest-kicker {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(29, 78, 216, 0.12);
+  color: #1d4ed8;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.amc-step1-pretest-hero h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+}
+
+.amc-step1-pretest-hero p {
+  max-width: 760px;
+  margin: 12px auto 0;
+  color: #334155;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.amc-step1-pretest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.amc-step1-pretest-card {
+  background: #ffffff;
+  border: 1px solid rgba(29, 78, 216, 0.2);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.amc-step1-pretest-card h2 {
+  margin: 0;
+  color: #1d4ed8;
+  font-size: 1rem;
+}
+
+.amc-step1-pretest-value {
+  margin: 10px 0 8px;
+  color: #0f172a;
+  font-size: 1.55rem;
+  font-weight: 700;
+}
+
+.amc-step1-pretest-note {
+  margin: 0;
+  color: #475569;
+  line-height: 1.55;
+  font-size: 0.95rem;
+}
+
+.amc-step1-pretest-format {
+  margin-top: 28px;
+  background: #ffffff;
+  border-left: 4px solid #2563eb;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.amc-step1-pretest-format h3 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.amc-step1-pretest-format p {
+  margin: 10px 0 0;
+  color: #334155;
+  line-height: 1.65;
+}
+
+.amc-step1-start-exam-btn {
+  margin-top: 16px;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 18px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f766e, #0369a1);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.amc-step1-start-exam-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(14, 116, 144, 0.25);
+}
+
+@media (max-width: 700px) {
+  .amc-step1-pretest-content {
+    margin-top: 74px;
+    padding: 16px 16px 52px;
+  }
+
+  .amc-step1-pretest-card,
+  .amc-step1-pretest-format {
+    padding: 18px;
+  }
+}

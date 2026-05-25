@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { sendLoginConfirmationEmail } = require('../utils/email');
 const { protect, authorize } = require('../middleware/auth');
 
 // Generate JWT Token
@@ -58,6 +59,21 @@ router.post('/login', async (req, res) => {
         email: user.email,
         role: user.role
       }
+    });
+
+    const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'Unknown';
+    const userAgent = req.headers['user-agent'] || 'Unknown device';
+
+    // Send asynchronously so login is never blocked by email delivery issues.
+    sendLoginConfirmationEmail({
+      to: user.email,
+      name: user.name,
+      role: user.role,
+      loginTime: new Date().toISOString(),
+      ipAddress,
+      userAgent
+    }).catch((emailError) => {
+      console.error('Login confirmation email failed:', emailError.message);
     });
   } catch (error) {
     res.status(500).json({

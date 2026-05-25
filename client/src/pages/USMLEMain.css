@@ -1,0 +1,280 @@
+.usmle-main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at 12% 14%, rgba(147, 197, 253, 0.3) 0%, rgba(147, 197, 253, 0) 34%),
+    radial-gradient(circle at 84% 20%, rgba(191, 219, 254, 0.45) 0%, rgba(191, 219, 254, 0) 36%),
+    linear-gradient(145deg, #f5fbff 0%, #eaf4ff 45%, #f3f9ff 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.usmle-content {
+  flex: 1;
+  margin-top: 80px;
+  padding: 24px 20px 36px;
+  width: min(1180px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.usmle-main .footer {
+  margin-top: auto;
+}
+
+.usmle-hero {
+  background: rgba(24, 101, 176, 0.2);
+  border: 1px solid rgba(148, 197, 244, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #0d3a62;
+  border-radius: 18px;
+  padding: 26px 24px;
+  box-shadow: 0 12px 28px rgba(26, 80, 128, 0.14);
+}
+
+.usmle-hero h1 {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+
+.usmle-hero p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 0.98rem;
+}
+
+.usmle-panel {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.38);
+  border: 1px solid rgba(160, 203, 240, 0.45);
+  border-radius: 18px;
+  padding: 18px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.usmle-sections-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  align-items: stretch;
+}
+
+.usmle-step-card {
+  border: 1px solid rgba(176, 208, 236, 0.7);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 10px;
+  padding: 0;
+  min-height: 320px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-align: left;
+  box-shadow: 0 8px 20px rgba(16, 68, 116, 0.12);
+  border-left: 4px solid var(--card-accent-color);
+  border-top: 3px solid var(--card-color);
+}
+
+.usmle-step-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 26px rgba(18, 83, 136, 0.18);
+}
+
+.usmle-step-card.active {
+  box-shadow: 0 15px 30px rgba(22, 94, 152, 0.2);
+  transform: translateY(-3px);
+}
+
+.usmle-card-header {
+  padding: 12px;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--card-glass-start) 0%, var(--card-glass-end) 100%);
+  border-bottom: 2px solid var(--card-accent-color);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 66px;
+}
+
+.usmle-card-icon {
+  font-size: 1rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.usmle-step-card:hover .usmle-card-icon {
+  transform: scale(1.05);
+}
+
+.usmle-title-wrap h3 {
+  margin: 0 0 4px;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.usmle-title-wrap p {
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 500;
+  opacity: 0.95;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.usmle-card-image {
+  width: 100%;
+  height: 116px;
+  overflow: hidden;
+  position: relative;
+}
+
+.usmle-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.usmle-step-card:hover .usmle-card-image img {
+  transform: scale(1.05);
+}
+
+.usmle-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.usmle-card-content {
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  min-height: 72px;
+}
+
+.usmle-card-content p {
+  color: #2d4e66;
+  line-height: 1.5;
+  margin: 0;
+  font-size: 0.78rem;
+  text-align: center;
+  width: 100%;
+}
+
+.usmle-card-actions {
+  display: flex;
+  gap: 8px;
+  padding: 0 12px 12px;
+}
+
+.usmle-card-actions.step1-actions {
+  flex-direction: column;
+}
+
+.usmle-secondary-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.usmle-action-btn {
+  flex: 1;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  padding: 9px 10px;
+  min-height: 40px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.usmle-action-btn.theory {
+  background: var(--card-color);
+  color: #ffffff;
+}
+
+.usmle-action-btn.intro {
+  background: #1d4ed8;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.usmle-action-btn.intro:hover {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.usmle-action-btn.theory:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.usmle-action-btn.pretest {
+  background: #007bff;
+  color: white;
+  border-color: #0056b3;
+}
+
+.usmle-action-btn.pretest:hover {
+  background: #0056b3;
+  border-color: #004085;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(0, 123, 255, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+  .usmle-content {
+    margin-top: 70px;
+    padding: 16px 12px 24px;
+  }
+
+  .usmle-hero {
+    border-radius: 14px;
+    padding: 18px 16px;
+  }
+
+  .usmle-hero h1 {
+    font-size: 1.2rem;
+  }
+
+  .usmle-hero p {
+    font-size: 0.9rem;
+  }
+
+  .usmle-sections-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .usmle-step-card {
+    min-height: 300px;
+  }
+
+  .usmle-secondary-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .usmle-sections-grid {
+    grid-template-columns: 1fr;
+  }
+}

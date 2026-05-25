@@ -1,26 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './AdminTheoryContent.css';
 
 function AdminTheoryContent() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const examType = new URLSearchParams(location.search).get('exam') === 'PLAB_2' ? 'PLAB_2' : 'PLAB_1';
+  const examLabel = examType === 'PLAB_2' ? 'PLAB-2' : 'PLAB-1';
   const [subjects, setSubjects] = useState([]);
-  const [selectedSubject, setSelectedSubject] = useState(null);
-  const [content, setContent] = useState(null);
+  const [subjectSearchTerm, setSubjectSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [notification, setNotification] = useState(null);
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    topics: [],
-    isPublished: true
-  });
 
   useEffect(() => {
     checkAuth();
     fetchSubjects();
-  }, []);
+  }, [examType]);
 
   const checkAuth = () => {
     const token = localStorage.getItem('token');
@@ -31,7 +26,7 @@ function AdminTheoryContent() {
 
   const fetchSubjects = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/plab-theory-subjects');
+      const response = await fetch(`http://localhost:5000/api/plab-theory-subjects?exam=${examType}`);
       const data = await response.json();
       setSubjects(data);
       setLoading(false);
@@ -42,63 +37,74 @@ function AdminTheoryContent() {
     }
   };
 
-  const fetchContentForSubject = async (subjectId) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(
-        `http://localhost:5000/api/plab-theory-content/subject/${subjectId}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        }
-      );
-      
-      const result = await response.json();
-      
-      if (result.success && result.data) {
-        setContent(result.data);
-        setFormData({
-          title: result.data.title,
-          topics: result.data.topics || [],
-          isPublished: result.data.isPublished
-        });
-      } else {
-        // No content exists yet, initialize empty form
-        setContent(null);
-        setFormData({
-          title: '',
-          topics: [],
-          isPublished: true
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching content:', error);
-      // Initialize empty form on error
-      setContent(null);
-      setFormData({
-        title: '',
-        topics: [],
-        isPublished: true
-      });
-    }
+  const selectSubject = (subjectId) => {
+    if (!subjectId) return;
+    navigate(`/admin/theory-content/${subjectId}?exam=${examType}`);
   };
 
-  const handleSubjectChange = (e) => {
-    const subjectId = e.target.value;
-    const subject = subjects.find(s => s._id === subjectId);
-    setSelectedSubject(subject);
-    if (subjectId) {
-      fetchContentForSubject(subjectId);
-    } else {
-      setSelectedSubject(null);
-      setContent(null);
-      setFormData({
-        title: '',
-        description: '',
-        topics: [],
-        isPublished: true
-      });
+  const groupSubjectsByWeightage = useMemo(() => {
+    const grouped = {
+      'VERY HIGH WEIGHTAGE': [],
+      'HIGH WEIGHTAGE': [],
+      'MODERATE WEIGHTAGE': [],
+      'LOW WEIGHTAGE': []
+    };
+
+    const filteredSubjects = subjects.filter(subject =>
+      subject.name.toLowerCase().includes(subjectSearchTerm.toLowerCase())
+    );
+
+    filteredSubjects.forEach(subject => {
+      if (grouped[subject.weightage]) {
+        grouped[subject.weightage].push(subject);
+      }
+    });
+
+    return grouped;
+  }, [subjects, subjectSearchTerm]);
+
+  const getWeightageConfig = (weightage) => {
+    switch (weightage) {
+      case 'VERY HIGH WEIGHTAGE':
+        return {
+          bgColor: '#1e40af',
+          borderColor: '#1d4ed8',
+          icon: '🔥',
+          badgeColor: '#dc2626',
+          label: 'VERY HIGH WEIGHTAGE (PASS-DECIDING)'
+        };
+      case 'HIGH WEIGHTAGE':
+        return {
+          bgColor: '#7c3aed',
+          borderColor: '#8b5cf6',
+          icon: '⚡',
+          badgeColor: '#ea580c',
+          label: 'HIGH WEIGHTAGE'
+        };
+      case 'MODERATE WEIGHTAGE':
+        return {
+          bgColor: '#0891b2',
+          borderColor: '#06b6d4',
+          icon: '⚖️',
+          badgeColor: '#16a34a',
+          label: 'MODERATE WEIGHTAGE'
+        };
+      case 'LOW WEIGHTAGE':
+        return {
+          bgColor: '#059669',
+          borderColor: '#10b981',
+          icon: '📘',
+          badgeColor: '#2563eb',
+          label: 'LOW WEIGHTAGE'
+        };
+      default:
+        return {
+          bgColor: '#64748b',
+          borderColor: '#94a3b8',
+          icon: '📝',
+          badgeColor: '#6b7280',
+          label: 'OTHER'
+        };
     }
   };
 
@@ -109,112 +115,6 @@ function AdminTheoryContent() {
     }, 3000);
   };
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  const handleTopicChange = (index, field, value) => {
-    const newTopics = [...formData.topics];
-    newTopics[index] = { ...newTopics[index], [field]: value };
-    setFormData(prev => ({ ...prev, topics: newTopics }));
-  };
-
-  const addTopic = () => {
-    setFormData(prev => ({
-      ...prev,
-      topics: [
-        ...prev.topics,
-        { title: '', content: '', videoLink: '', order: prev.topics.length }
-      ]
-    }));
-  };
-
-  const removeTopic = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      topics: prev.topics.filter((_, i) => i !== index)
-    }));
-  };
-
-  const moveTopicUp = (index) => {
-    if (index === 0) return;
-    const newTopics = [...formData.topics];
-    [newTopics[index], newTopics[index - 1]] = [newTopics[index - 1], newTopics[index]];
-    newTopics.forEach((topic, i) => {
-      topic.order = i;
-    });
-    setFormData(prev => ({ ...prev, topics: newTopics }));
-  };
-
-  const moveTopicDown = (index) => {
-    if (index === formData.topics.length - 1) return;
-    const newTopics = [...formData.topics];
-    [newTopics[index], newTopics[index + 1]] = [newTopics[index + 1], newTopics[index]];
-    newTopics.forEach((topic, i) => {
-      topic.order = i;
-    });
-    setFormData(prev => ({ ...prev, topics: newTopics }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!selectedSubject) {
-      showNotification('Please select a subject', 'error');
-      return;
-    }
-
-    if (!formData.title.trim()) {
-      showNotification('Title is required', 'error');
-      return;
-    }
-
-    setSaving(true);
-
-    try {
-      const token = localStorage.getItem('token');
-      const url = content
-        ? `http://localhost:5000/api/plab-theory-content/${content._id}`
-        : 'http://localhost:5000/api/plab-theory-content';
-      
-      const method = content ? 'PUT' : 'POST';
-      
-      const payload = content
-        ? formData
-        : { ...formData, subjectId: selectedSubject._id };
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        showNotification(
-          content ? 'Content updated successfully!' : 'Content created successfully!',
-          'success'
-        );
-        setContent(result.data);
-      } else {
-        showNotification(result.message || 'Error saving content', 'error');
-      }
-    } catch (error) {
-      console.error('Error saving content:', error);
-      showNotification('Error saving content', 'error');
-    } finally {
-      setSaving(false);
-    }
-  };
-
   if (loading) {
     return <div className="admin-loading">Loading...</div>;
   }
@@ -222,9 +122,9 @@ function AdminTheoryContent() {
   return (
     <div className="admin-theory-content">
       <div className="admin-header">
-        <h1>Manage Theory Subject Content</h1>
-        <button onClick={() => navigate('/admin/dashboard')} className="back-button">
-          ← Back to Dashboard
+        <h1>Manage {examLabel} Theory Subject Content</h1>
+        <button onClick={() => navigate('/admin/dashboard?section=plab-admin')} className="back-button">
+          ← Back to PLAB Admin Section
         </button>
       </div>
 
@@ -236,147 +136,78 @@ function AdminTheoryContent() {
 
       <div className="content-form-container">
         <div className="subject-selector">
-          <label>Select Subject:</label>
-          <select 
-            value={selectedSubject?._id || ''} 
-            onChange={handleSubjectChange}
-            className="subject-select"
-          >
-            <option value="">-- Select a Subject --</option>
-            {subjects.map(subject => (
-              <option key={subject._id} value={subject._id}>
-                {subject.name} ({subject.weightage})
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {selectedSubject && (
-          <form onSubmit={handleSubmit} className="theory-content-form">
-            <div className="form-section">
-              <h2>Basic Information</h2>
-              
-              <div className="form-group">
-                <label htmlFor="title">
-                  Title <span className="required">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  placeholder="e.g., Ethics, Law & Communication"
-                  required
-                />
-              </div>
-
-              <div className="form-group checkbox-group">
-                <label>
-                  <input
-                    type="checkbox"
-                    name="isPublished"
-                    checked={formData.isPublished}
-                    onChange={handleInputChange}
-                  />
-                  <span>Published (visible to students)</span>
-                </label>
-              </div>
+          <div className="admin-subject-bank-header">
+            <h2>Select {examLabel} Subject by Weightage</h2>
+            <p>Choose a subject card below to manage theory content.</p>
+            <div className="selected-subject-chip">
+              Click a subject card to open content editor page
             </div>
+          </div>
 
-            <div className="form-section topics-section">
-              <div className="section-header">
-                <h2>Topics</h2>
-                <button type="button" onClick={addTopic} className="add-topic-btn">
-                  + Add Topic
+          <div className="admin-subject-search-container">
+            <div className="admin-subject-search-box">
+              <span className="admin-subject-search-icon">🔍</span>
+              <input
+                type="text"
+                placeholder="Search subjects..."
+                value={subjectSearchTerm}
+                onChange={(e) => setSubjectSearchTerm(e.target.value)}
+                className="admin-subject-search-input"
+              />
+              {subjectSearchTerm && (
+                <button
+                  className="admin-clear-search"
+                  onClick={() => setSubjectSearchTerm('')}
+                  aria-label="Clear search"
+                >
+                  ✕
                 </button>
-              </div>
-
-              {formData.topics.length === 0 ? (
-                <p className="no-topics">No topics added yet. Click "Add Topic" to start.</p>
-              ) : (
-                <div className="topics-list">
-                  {formData.topics.map((topic, index) => (
-                    <div key={index} className="topic-card">
-                      <div className="topic-header">
-                        <h3>Topic {index + 1}</h3>
-                        <div className="topic-actions">
-                          <button
-                            type="button"
-                            onClick={() => moveTopicUp(index)}
-                            disabled={index === 0}
-                            className="move-btn"
-                            title="Move up"
-                          >
-                            ↑
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => moveTopicDown(index)}
-                            disabled={index === formData.topics.length - 1}
-                            className="move-btn"
-                            title="Move down"
-                          >
-                            ↓
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => removeTopic(index)}
-                            className="remove-btn"
-                            title="Remove topic"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="form-group">
-                        <label>Topic Title <span className="required">*</span></label>
-                        <input
-                          type="text"
-                          value={topic.title}
-                          onChange={(e) => handleTopicChange(index, 'title', e.target.value)}
-                          placeholder="e.g., Consent and Capacity"
-                          required
-                        />
-                      </div>
-
-                      <div className="form-group">
-                        <label>Content <span className="required">*</span></label>
-                        <textarea
-                          value={topic.content}
-                          onChange={(e) => handleTopicChange(index, 'content', e.target.value)}
-                          placeholder="Detailed content for this topic..."
-                          rows="6"
-                          required
-                        />
-                      </div>
-
-                      <div className="form-group">
-                        <label>Video Link (Optional)</label>
-                        <input
-                          type="url"
-                          value={topic.videoLink}
-                          onChange={(e) => handleTopicChange(index, 'videoLink', e.target.value)}
-                          placeholder="https://www.youtube.com/watch?v=..."
-                        />
-                        <small className="help-text">
-                          Enter YouTube, Vimeo, or other video platform URL
-                        </small>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               )}
             </div>
+          </div>
 
-            <div className="form-actions">
-              <button type="submit" className="save-btn" disabled={saving}>
-                {saving ? 'Saving...' : content ? 'Update Content' : 'Create Content'}
-              </button>
+          {subjectSearchTerm && Object.values(groupSubjectsByWeightage).every(arr => arr.length === 0) ? (
+            <div className="admin-no-subjects-found">
+              <h3>No subjects found</h3>
+              <p>No subjects match your search for "{subjectSearchTerm}"</p>
             </div>
-          </form>
-        )}
+          ) : (
+            Object.keys(groupSubjectsByWeightage).map((weightage) => {
+              const subjectsInCategory = groupSubjectsByWeightage[weightage];
+              if (subjectsInCategory.length === 0) return null;
+
+              const config = getWeightageConfig(weightage);
+
+              return (
+                <div key={weightage} className="admin-weightage-section">
+                  <div className="admin-weightage-header">
+                    <span className="admin-weightage-badge" style={{ backgroundColor: config.badgeColor }}>
+                      {config.icon} {config.label}
+                    </span>
+                    <span className="admin-subject-count">{subjectsInCategory.length} subjects</span>
+                  </div>
+
+                  <div className="admin-subject-grid">
+                    {subjectsInCategory.map((subject) => (
+                      <button
+                        key={subject._id}
+                        className="admin-subject-item"
+                        style={{
+                          backgroundColor: config.bgColor,
+                          borderLeft: `4px solid ${config.borderColor}`
+                        }}
+                        onClick={() => selectSubject(subject._id)}
+                      >
+                        <span className="admin-subject-name">{subject.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
       </div>
     </div>
   );
