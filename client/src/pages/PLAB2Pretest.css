@@ -1,0 +1,130 @@
+.plab2-pretest-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  padding-top: 80px;
+}
+
+.plab2-pretest-hero {
+  background: linear-gradient(135deg, #0a2463 0%, #2a6ebb 100%);
+  color: #fff;
+  text-align: center;
+  padding: 36px 20px 28px;
+}
+
+.plab2-pretest-hero-content h1 {
+  margin: 0 0 8px;
+  font-size: 1.9rem;
+  font-weight: 800;
+}
+
+.plab2-pretest-hero-content p {
+  margin: 0;
+  opacity: 0.92;
+  font-size: 1rem;
+}
+
+.plab2-pretest-container {
+  width: min(1000px, 100%);
+  margin: 0 auto;
+  padding: 24px 16px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.plab2-pretest-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #dbeafe;
+  box-shadow: 0 6px 16px rgba(10, 36, 99, 0.08);
+  padding: 22px;
+}
+
+.plab2-pretest-card h2,
+.plab2-pretest-card h3 {
+  margin: 0 0 10px;
+  color: #0a2463;
+}
+
+.scenario-question {
+  margin: 0 0 14px;
+  color: #1f2d3d;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.scenario-answer-label {
+  display: block;
+  font-weight: 600;
+  color: #243b53;
+  margin-bottom: 8px;
+}
+
+.scenario-answer-input {
+  width: 100%;
+  border: 2px solid #d6e4ff;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 140px;
+  margin-bottom: 12px;
+}
+
+.scenario-answer-input:focus {
+  outline: none;
+  border-color: #2a6ebb;
+}
+
+.show-answer-btn {
+  border: none;
+  border-radius: 8px;
+  background: #0a2463;
+  color: #fff;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.show-answer-btn:hover {
+  background: #1f4fa3;
+}
+
+.ideal-answer-box {
+  margin-top: 14px;
+  background: #f8fbff;
+  border: 1px solid #d6e4ff;
+  border-left: 4px solid #2a6ebb;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.ideal-answer-box p {
+  margin: 0;
+  color: #243b53;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.error-card {
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+@media (max-width: 768px) {
+  .plab2-pretest-page {
+    padding-top: 70px;
+  }
+
+  .plab2-pretest-hero-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .plab2-pretest-card {
+    padding: 16px;
+  }
+}

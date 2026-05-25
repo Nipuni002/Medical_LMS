@@ -4,7 +4,7 @@ const plabContentSchema = new mongoose.Schema({
   pageType: {
     type: String,
     required: true,
-    enum: ['what-is-plab', 'plab1-tips', 'plab2-tips', 'plab1-theory', 'plab2-theory'],
+    enum: ['what-is-plab', 'plab1-tips', 'plab2-tips', 'plab1-theory', 'plab2-theory', 'plab2-pretest-scenarios'],
     unique: true
   },
   title: {

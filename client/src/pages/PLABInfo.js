@@ -10,6 +10,22 @@ function PLABInfo() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const sanitizeSectionHtml = (html = '') => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    doc.querySelectorAll('script, iframe, object, embed').forEach((node) => node.remove());
+    doc.querySelectorAll('*').forEach((node) => {
+      [...node.attributes].forEach((attr) => {
+        if (attr.name.startsWith('on')) {
+          node.removeAttribute(attr.name);
+        }
+      });
+    });
+
+    return doc.body.innerHTML;
+  };
+
   useEffect(() => {
     fetchPlabContent();
   }, []);
@@ -75,10 +91,13 @@ function PLABInfo() {
         {/* Dynamic Sections */}
         {content.sections && content.sections.length > 0 && (
           <div className="content-sections">
-            {content.sections.sort((a, b) => a.order - b.order).map((section) => (
+            {[...content.sections].sort((a, b) => a.order - b.order).map((section) => (
               <div key={section._id} className="content-section-card">
                 <h3 className="section-heading">{section.heading}</h3>
-                <p className="section-content">{section.content}</p>
+                <div
+                  className="section-content"
+                  dangerouslySetInnerHTML={{ __html: sanitizeSectionHtml(section.content || '') }}
+                />
               </div>
             ))}
           </div>

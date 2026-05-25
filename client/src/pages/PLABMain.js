@@ -43,9 +43,9 @@ function PLABMain() {
       path: '/plab/plab2',
       description: 'Prepare for the 16-station OSCE exam with clinical scenario simulations, communication skills training, and practical assessment guidance.',
       buttons: [
-        { label: 'Tips to get ready', color: '#2A6EBB', path: 'guide' },
-        { label: 'Theory Bank', color: '#3E92CC', path: 'cases' },
-        { label: 'Tests', color: '#4CA1D5', path: 'practice' },
+        { label: 'Theory bank', color: '#2A6EBB', path: '/plab/plab2/theory' },
+        { label: 'Guide to PLAB-2', color: '#3E92CC', path: 'guide' },
+        { label: 'Pretest scenarios', color: '#4CA1D5', path: 'practice' },
       ]
     },
   ];

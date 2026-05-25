@@ -1,0 +1,96 @@
+.plab2-guide-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  padding-top: 80px;
+}
+
+.plab2-guide-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.plab2-guide-hero {
+  background: linear-gradient(135deg, #0a2463 0%, #2a6ebb 100%);
+  color: white;
+  text-align: center;
+  padding: 36px 20px 28px;
+}
+
+.plab2-guide-hero-content h1 {
+  margin: 0 0 8px;
+  font-size: 1.9rem;
+  font-weight: 800;
+}
+
+.plab2-guide-hero-content p {
+  margin: 0;
+  opacity: 0.92;
+  font-size: 1rem;
+}
+
+.plab2-guide-container {
+  width: min(1000px, 100%);
+  margin: 0 auto;
+  padding: 24px 16px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.plab2-guide-page .footer {
+  margin-top: auto;
+}
+
+.plab2-guide-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #dbeafe;
+  box-shadow: 0 6px 16px rgba(10, 36, 99, 0.08);
+  padding: 22px;
+}
+
+.plab2-guide-card h2 {
+  margin: 0 0 12px;
+  color: #0a2463;
+  font-size: 1.35rem;
+}
+
+.plab2-guide-card p {
+  margin: 0;
+  color: #243b53;
+  line-height: 1.65;
+  font-size: 0.98rem;
+}
+
+.plab2-guide-card ul,
+.plab2-guide-card ol {
+  margin: 0;
+  padding-left: 20px;
+  color: #243b53;
+  line-height: 1.7;
+}
+
+.plab2-guide-card li {
+  margin-bottom: 10px;
+}
+
+.plab2-guide-card li:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .plab2-guide-page {
+    padding-top: 70px;
+  }
+
+  .plab2-guide-hero-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .plab2-guide-card {
+    padding: 16px;
+  }
+}

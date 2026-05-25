@@ -2,6 +2,19 @@ const mongoose = require('mongoose');
 const User = require('../models/User');
 require('dotenv').config();
 
+const ADMIN_USERS = [
+  {
+    name: 'Admin User',
+    email: 'thakshilaperera37@gmail.com',
+    password: 'AdminN123'
+  },
+  {
+    name: 'Admin User 2',
+    email: 'uth3000@yahoo.com',
+    password: 'AdminN123'
+  }
+];
+
 const createAdmin = async () => {
   try {
     // Connect to MongoDB
@@ -12,32 +25,51 @@ const createAdmin = async () => {
 
     console.log('MongoDB Connected');
 
-    // Check if admin already exists
-    const adminExists = await User.findOne({ email: 'thakshilaperera37@gmail.com' });
+    const createdAdmins = [];
+    const updatedAdmins = [];
+    const existingAdmins = [];
 
-    if (adminExists) {
-      console.log('❌ Admin user already exists!');
-      console.log('Email:', adminExists.email);
-      console.log('Role:', adminExists.role);
-      await mongoose.connection.close();
-      process.exit(0);
+    for (const adminUser of ADMIN_USERS) {
+      const existingUser = await User.findOne({ email: adminUser.email });
+
+      if (!existingUser) {
+        const createdUser = await User.create({
+          name: adminUser.name,
+          email: adminUser.email,
+          password: adminUser.password,
+          role: 'admin'
+        });
+        createdAdmins.push(createdUser.email);
+        continue;
+      }
+
+      if (existingUser.role !== 'admin') {
+        existingUser.role = 'admin';
+        await existingUser.save();
+        updatedAdmins.push(existingUser.email);
+      } else {
+        existingAdmins.push(existingUser.email);
+      }
     }
 
-    // Create admin user
-    const admin = await User.create({
-      name: 'Admin User',
-      email: 'thakshilaperera37@gmail.com',
-      password: 'AdminN123',
-      role: 'admin'
-    });
+    console.log('✅ Admin seeding completed.');
+    console.log('-----------------------------------');
 
-    console.log('✅ Admin user created successfully!');
+    if (createdAdmins.length > 0) {
+      console.log('Created admin users:', createdAdmins.join(', '));
+      console.log('Default password for new users: AdminN123');
+    }
+
+    if (updatedAdmins.length > 0) {
+      console.log('Updated role to admin for:', updatedAdmins.join(', '));
+    }
+
+    if (existingAdmins.length > 0) {
+      console.log('Already admin users:', existingAdmins.join(', '));
+    }
+
+    console.log('Allowed admin emails:', ADMIN_USERS.map((user) => user.email).join(', '));
     console.log('-----------------------------------');
-    console.log('Email:', admin.email);
-    console.log('Password: AdminN123');
-    console.log('Role:', admin.role);
-    console.log('-----------------------------------');
-    console.log('You can now login with these credentials');
 
     await mongoose.connection.close();
     process.exit(0);

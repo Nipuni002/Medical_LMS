@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import ReactQuill from 'react-quill';
 import { useNavigate } from 'react-router-dom';
+import 'react-quill/dist/quill.snow.css';
 import './AdminPlabContent.css';
 
 const AdminPlab1Tips = () => {
@@ -9,6 +11,11 @@ const AdminPlab1Tips = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
   const [popupType, setPopupType] = useState('success');
+  const [savingSection, setSavingSection] = useState(false);
+  const [showSectionModal, setShowSectionModal] = useState(false);
+  const [sectionModalMode, setSectionModalMode] = useState('add'); // add | edit | delete
+  const [activeSectionIndex, setActiveSectionIndex] = useState(null);
+  const [sectionForm, setSectionForm] = useState({ heading: '', content: '', order: 1 });
   const [formData, setFormData] = useState({
     pageType: 'plab1-tips',
     title: '',
@@ -16,6 +23,27 @@ const AdminPlab1Tips = () => {
     sections: [],
     isPublished: true
   });
+
+  const editorModules = {
+    toolbar: [
+      [{ header: [2, 3, false] }],
+      ['bold', 'italic', 'underline'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['blockquote', 'link'],
+      ['clean']
+    ]
+  };
+
+  const editorFormats = [
+    'header',
+    'bold',
+    'italic',
+    'underline',
+    'list',
+    'bullet',
+    'blockquote',
+    'link'
+  ];
 
   const showNotification = (message, type = 'success') => {
     setPopupMessage(message);
@@ -71,69 +99,163 @@ const AdminPlab1Tips = () => {
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+  const closeSectionModal = () => {
+    setShowSectionModal(false);
+    setActiveSectionIndex(null);
+    setSectionForm({ heading: '', content: '', order: 1 });
+  };
+
+  const openAddSectionModal = () => {
+    setSectionModalMode('add');
+    setActiveSectionIndex(null);
+    setSectionForm({ heading: '', content: '', order: formData.sections.length + 1 });
+    setShowSectionModal(true);
+  };
+
+  const openEditSectionModal = (index) => {
+    const section = formData.sections[index];
+    setSectionModalMode('edit');
+    setActiveSectionIndex(index);
+    setSectionForm({
+      heading: section.heading || '',
+      content: section.content || '',
+      order: section.order || index + 1
+    });
+    setShowSectionModal(true);
+  };
+
+  const openDeleteSectionModal = (index) => {
+    setSectionModalMode('delete');
+    setActiveSectionIndex(index);
+    setShowSectionModal(true);
+  };
+
+  const handleSectionFormChange = (e) => {
+    const { name, value } = e.target;
+    setSectionForm(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: name === 'order' ? parseInt(value, 10) || 1 : value
     }));
   };
 
-  const handleSectionChange = (index, field, value) => {
-    const newSections = [...formData.sections];
-    newSections[index] = { ...newSections[index], [field]: value };
-    setFormData(prev => ({ ...prev, sections: newSections }));
+  const handleSectionContentChange = (value) => {
+    setSectionForm(prev => ({ ...prev, content: value }));
   };
 
-  const addSection = () => {
-    setFormData(prev => ({
-      ...prev,
-      sections: [...prev.sections, { heading: '', content: '', order: prev.sections.length + 1 }]
-    }));
-  };
+  const getPlainTextFromHtml = (htmlContent = '') =>
+    htmlContent
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
 
-  const removeSection = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      sections: prev.sections.filter((_, i) => i !== index)
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const saveSections = async (updatedSections, successMessage) => {
     const token = localStorage.getItem('token');
 
-    try {
-      let url, method;
-      
-      if (editingContent) {
-        url = `http://localhost:5000/api/plab-content/${editingContent._id}`;
-        method = 'PUT';
-      } else {
-        url = 'http://localhost:5000/api/plab-content';
-        method = 'POST';
-      }
+    if (!editingContent?._id) {
+      showNotification('Unable to save. Content record not found.', 'error');
+      return false;
+    }
 
-      const response = await fetch(url, {
-        method,
+    setSavingSection(true);
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/plab-content/${editingContent._id}`, {
+        method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          sections: updatedSections
+        })
       });
 
       const data = await response.json();
 
-      if (data.success) {
-        showNotification(editingContent ? 'Content updated successfully!' : 'Content created successfully!', 'success');
-        fetchPlab1TipsContent();
-      } else {
+      if (!data.success) {
         showNotification('Error: ' + data.error, 'error');
+        return false;
       }
+
+      const updatedContent = data.data;
+      setEditingContent(updatedContent);
+      setFormData({
+        pageType: updatedContent.pageType,
+        title: updatedContent.title,
+        subtitle: updatedContent.subtitle || '',
+        sections: updatedContent.sections || [],
+        isPublished: updatedContent.isPublished
+      });
+
+      showNotification(successMessage, 'success');
+      return true;
     } catch (error) {
-      console.error('Error saving content:', error);
-      showNotification('Error saving content', 'error');
+      console.error('Error saving sections:', error);
+      showNotification('Error saving section changes', 'error');
+      return false;
+    } finally {
+      setSavingSection(false);
+    }
+  };
+
+  const handleSectionModalSubmit = async () => {
+    if (savingSection) {
+      return;
+    }
+
+    let updatedSections = [];
+
+    if (sectionModalMode === 'delete') {
+      updatedSections = formData.sections.filter((_, i) => i !== activeSectionIndex);
+      const isSaved = await saveSections(updatedSections, 'Section deleted successfully!');
+
+      if (isSaved) {
+        closeSectionModal();
+      }
+
+      return;
+    }
+
+    if (!sectionForm.heading.trim() || !getPlainTextFromHtml(sectionForm.content)) {
+      showNotification('Heading and content are required.', 'error');
+      return;
+    }
+
+    if (sectionModalMode === 'add') {
+      updatedSections = [
+        ...formData.sections,
+        {
+          heading: sectionForm.heading.trim(),
+          content: sectionForm.content,
+          order: sectionForm.order || formData.sections.length + 1
+        }
+      ];
+
+      const isSaved = await saveSections(updatedSections, 'Section added successfully!');
+
+      if (isSaved) {
+        closeSectionModal();
+      }
+
+      return;
+    }
+
+    if (sectionModalMode === 'edit' && activeSectionIndex !== null) {
+      updatedSections = [...formData.sections];
+      updatedSections[activeSectionIndex] = {
+        ...updatedSections[activeSectionIndex],
+        heading: sectionForm.heading.trim(),
+        content: sectionForm.content,
+        order: sectionForm.order || activeSectionIndex + 1
+      };
+
+      const isSaved = await saveSections(updatedSections, 'Section updated successfully!');
+
+      if (isSaved) {
+        closeSectionModal();
+      }
     }
   };
 
@@ -145,125 +267,136 @@ const AdminPlab1Tips = () => {
     <div className="admin-plab-content">
       <div className="admin-header">
         <h1>Edit PLAB 1 Tips Content</h1>
-        <button onClick={() => navigate('/admin/dashboard')} className="back-button">
-          ← Back to Dashboard
+        <button onClick={() => navigate('/admin/dashboard?section=plab-admin')} className="back-button">
+          ← Back to PLAB Admin Section
         </button>
       </div>
 
-      <div className="content-form-container">
-        <h2>{editingContent ? 'Edit Content' : 'Create New Content'}</h2>
-        <form onSubmit={handleSubmit} className="content-form">
-          <div className="form-group">
-            <label>Page Type *</label>
-            <select
-              name="pageType"
-              value={formData.pageType}
-              onChange={handleInputChange}
-              required
-              disabled
-            >
-              <option value="plab1-tips">PLAB 1 Tips</option>
-            </select>
-          </div>
+      {!loading && editingContent && (
+        <div className="content-form-container">
+          <h2>Edit Content</h2>
+          <div className="content-form">
 
-          <div className="form-group">
-            <label>Title *</label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleInputChange}
-              required
-              placeholder="e.g., PLAB 1 TIPS"
-            />
-          </div>
+            <div className="sections-container">
+              <div className="sections-header">
+                <h3>Tips Sections</h3>
+                <button type="button" onClick={openAddSectionModal} className="add-section-button">
+                  + Add Tip Section
+                </button>
+              </div>
 
-          <div className="form-group">
-            <label>Subtitle</label>
-            <input
-              type="text"
-              name="subtitle"
-              value={formData.subtitle}
-              onChange={handleInputChange}
-              placeholder="e.g., (Principles to follow throughout preparation & the exam)"
-            />
-          </div>
+              {formData.sections.map((section, index) => (
+                <div key={index} className="section-item">
+                  <div className="section-header">
+                    <h4>Tip {index + 1}</h4>
+                    <div className="section-actions">
+                      <button
+                        type="button"
+                        onClick={() => openEditSectionModal(index)}
+                        className="section-action-button update-section-button"
+                      >
+                        Update
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => openDeleteSectionModal(index)}
+                        className="section-action-button delete-section-button"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
 
-          <div className="sections-container">
-            <div className="sections-header">
-              <h3>Tips Sections</h3>
-              <button type="button" onClick={addSection} className="add-section-button">
-                + Add Tip Section
-              </button>
+                  <p className="section-heading-preview">{section.heading}</p>
+                  <div
+                    className="section-content-preview"
+                    dangerouslySetInnerHTML={{ __html: section.content || '' }}
+                  />
+                  <p className="section-order-preview">Display order: {section.order || index + 1}</p>
+                </div>
+              ))}
+
+              {formData.sections.length === 0 && (
+                <p className="no-sections-message">No tips added yet. Click "Add Tip Section" to create one.</p>
+              )}
             </div>
 
-            {formData.sections.map((section, index) => (
-              <div key={index} className="section-item">
-                <div className="section-header">
-                  <h4>Tip {index + 1}</h4>
-                  <button
-                    type="button"
-                    onClick={() => removeSection(index)}
-                    className="remove-section-button"
-                  >
-                    × Remove
+          </div>
+        </div>
+      )}
+
+      {showSectionModal && (
+        <div className="section-modal-overlay" onClick={closeSectionModal}>
+          <div className="section-modal" onClick={(e) => e.stopPropagation()}>
+            {sectionModalMode === 'delete' ? (
+              <>
+                <h3>Delete Tip</h3>
+                <p className="section-modal-text">
+                  Are you sure you want to delete tip {activeSectionIndex !== null ? activeSectionIndex + 1 : ''}?
+                </p>
+                <div className="section-modal-actions">
+                  <button type="button" className="modal-cancel-button" onClick={closeSectionModal}>
+                    Cancel
+                  </button>
+                  <button type="button" className="modal-delete-button" onClick={handleSectionModalSubmit} disabled={savingSection}>
+                    Delete
                   </button>
                 </div>
+              </>
+            ) : (
+              <>
+                <h3>{sectionModalMode === 'add' ? 'Add Tip Details' : 'Update Tip Details'}</h3>
 
                 <div className="form-group">
-                  <label>Heading *</label>
+                  <label>Heading</label>
                   <input
                     type="text"
-                    value={section.heading}
-                    onChange={(e) => handleSectionChange(index, 'heading', e.target.value)}
+                    name="heading"
+                    value={sectionForm.heading}
+                    onChange={handleSectionFormChange}
+                    placeholder="Enter tip heading"
                     required
-                    placeholder="e.g., 1. Think Like a UK Doctor"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label>Content * (Use • or - for bullet points, one per line)</label>
-                  <textarea
-                    value={section.content}
-                    onChange={(e) => handleSectionChange(index, 'content', e.target.value)}
-                    rows="6"
-                    required
-                    placeholder="Enter tip description or bullet points&#10;• Follow NICE / GMC logic, not home-country practice&#10;• Conservative, safe, patient-centred answers score best"
-                  />
+                  <label>Content</label>
+                  <div className="section-editor-wrapper">
+                    <ReactQuill
+                      theme="snow"
+                      value={sectionForm.content}
+                      onChange={handleSectionContentChange}
+                      modules={editorModules}
+                      formats={editorFormats}
+                      placeholder="Write engaging tip content here..."
+                    />
+                  </div>
                 </div>
 
                 <div className="form-group">
                   <label>Order</label>
                   <input
                     type="number"
-                    value={section.order}
-                    onChange={(e) => handleSectionChange(index, 'order', parseInt(e.target.value))}
+                    name="order"
+                    value={sectionForm.order}
+                    onChange={handleSectionFormChange}
                     min="1"
                   />
                 </div>
-              </div>
-            ))}
-          </div>
 
-          <div className="form-group checkbox-group">
-            <label>
-              <input
-                type="checkbox"
-                name="isPublished"
-                checked={formData.isPublished}
-                onChange={handleInputChange}
-              />
-              Published
-            </label>
+                <div className="section-modal-actions">
+                  <button type="button" className="modal-cancel-button" onClick={closeSectionModal}>
+                    Cancel
+                  </button>
+                  <button type="button" className="modal-save-button" onClick={handleSectionModalSubmit} disabled={savingSection}>
+                    {savingSection ? 'Saving...' : (sectionModalMode === 'add' ? 'Add Tip' : 'Update Tip')}
+                  </button>
+                </div>
+              </>
+            )}
           </div>
-
-          <div className="form-actions">
-            <button type="submit" className="submit-button">
-              {editingContent ? 'Update Content' : 'Create Content'}
-            </button>
-          </div>
-        </form>
-      </div>
+        </div>
+      )}
 
       {/* Popup Notification */}
       {showPopup && (

@@ -12,6 +12,16 @@ The `.env` file contains:
 ```
 PORT=5000
 MONGODB_URI=mongodb+srv://Admin:ABC123@cluster0.2ndv7.mongodb.net/medical_db?appName=Cluster0
+JWT_SECRET=change_this_jwt_secret
+JWT_EXPIRE=30d
+
+# SMTP config for login confirmation emails
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email@example.com
+SMTP_PASS=your_smtp_password
+EMAIL_FROM=Medical LMS <your_email@example.com>
+APP_NAME=Medical LMS
 ```
 
 ## Installation

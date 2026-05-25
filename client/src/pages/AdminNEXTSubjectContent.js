@@ -1,0 +1,569 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import './AdminTheoryContent.css';
+
+const getStepLabel = (step) => {
+  if (step === 'STEP_1') return 'STEP 1 (Theory)';
+  if (step === 'STEP_2') return 'STEP 2 (Clinical)';
+  return step || 'NExT';
+};
+
+function AdminNEXTSubjectContent() {
+  const navigate = useNavigate();
+  const { subjectId } = useParams();
+
+  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [notification, setNotification] = useState(null);
+  const [showAddTopicModal, setShowAddTopicModal] = useState(false);
+  const [showEditTopicModal, setShowEditTopicModal] = useState(false);
+  const [showDeleteTopicModal, setShowDeleteTopicModal] = useState(false);
+  const [editTopicIndex, setEditTopicIndex] = useState(null);
+  const [deleteTopicIndex, setDeleteTopicIndex] = useState(null);
+  const [newTopic, setNewTopic] = useState({
+    title: '',
+    content: '',
+    videoLink: ''
+  });
+  const [editTopic, setEditTopic] = useState({
+    title: '',
+    content: '',
+    videoLink: ''
+  });
+  const [formData, setFormData] = useState({
+    title: '',
+    topics: [],
+    isPublished: true
+  });
+
+  const getTopicPreviewText = (html = '') => {
+    const plainText = html
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (!plainText) return 'No content added yet.';
+    if (plainText.length <= 180) return plainText;
+    return `${plainText.slice(0, 180)}...`;
+  };
+
+  const quillModules = useMemo(() => ({
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      [{ align: [] }],
+      ['blockquote', 'code-block'],
+      [{ color: [] }, { background: [] }],
+      ['link'],
+      ['clean']
+    ]
+  }), []);
+
+  useEffect(() => {
+    checkAuth();
+    fetchInitialData();
+  }, [subjectId]);
+
+  const checkAuth = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/admin/login');
+    }
+  };
+
+  const showNotification = (message, type = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  };
+
+  const backToStepPage = () => {
+    navigate('/admin/subjects-content');
+  };
+
+  const fetchInitialData = async () => {
+    if (!subjectId) {
+      navigate('/admin/next-content');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/next-subjects');
+      const subjects = await response.json();
+      const subject = subjects.find((item) => item._id === subjectId);
+
+      if (!subject) {
+        showNotification('Selected subject not found', 'error');
+        navigate('/admin/next-content');
+        return;
+      }
+
+      setSelectedSubject(subject);
+      await fetchContentForSubject(subjectId, subject.name);
+    } catch (error) {
+      console.error('Error loading subject:', error);
+      showNotification('Error loading subject details', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchContentForSubject = async (id, subjectName = '') => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(
+        `http://localhost:5000/api/next-theory-content/subject/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        setContent(result.data);
+        setFormData({
+          title: result.data.title || subjectName,
+          topics: result.data.topics || [],
+          isPublished: result.data.isPublished
+        });
+      } else {
+        setContent(null);
+        setFormData({
+          title: subjectName,
+          topics: [],
+          isPublished: true
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching content:', error);
+      setContent(null);
+      setFormData({
+        title: subjectName,
+        topics: [],
+        isPublished: true
+      });
+    }
+  };
+
+  const persistContent = async (nextTopics, successMessage) => {
+    if (!selectedSubject) {
+      showNotification('Please select a subject', 'error');
+      return false;
+    }
+
+    setSaving(true);
+
+    try {
+      const token = localStorage.getItem('token');
+      const url = content
+        ? `http://localhost:5000/api/next-theory-content/${content._id}`
+        : 'http://localhost:5000/api/next-theory-content';
+
+      const method = content ? 'PUT' : 'POST';
+
+      const normalizedFormData = {
+        ...formData,
+        title: selectedSubject.name,
+        topics: nextTopics,
+        isPublished: formData.isPublished ?? true
+      };
+
+      const payload = content
+        ? normalizedFormData
+        : { ...normalizedFormData, subjectId: selectedSubject._id };
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        const updatedTopics = result.data?.topics || nextTopics;
+        setContent(result.data);
+        setFormData((prev) => ({
+          ...prev,
+          title: result.data?.title || normalizedFormData.title,
+          topics: updatedTopics,
+          isPublished: result.data?.isPublished ?? normalizedFormData.isPublished
+        }));
+        if (successMessage) {
+          showNotification(successMessage, 'success');
+        }
+        return true;
+      }
+
+      showNotification(result.message || 'Error saving content', 'error');
+      return false;
+    } catch (error) {
+      console.error('Error saving content:', error);
+      showNotification('Error saving content', 'error');
+      return false;
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const addTopic = () => {
+    setShowAddTopicModal(true);
+    setNewTopic({
+      title: '',
+      content: '',
+      videoLink: ''
+    });
+  };
+
+  const handleAddTopicConfirm = async () => {
+    if (!newTopic.title.trim()) {
+      showNotification('Topic title is required', 'error');
+      return;
+    }
+    if (!newTopic.content.trim()) {
+      showNotification('Topic content is required', 'error');
+      return;
+    }
+
+    const newTopics = [
+      ...formData.topics,
+      {
+        title: newTopic.title,
+        content: newTopic.content,
+        videoLink: newTopic.videoLink,
+        order: formData.topics.length
+      }
+    ];
+
+    const saved = await persistContent(newTopics, 'Topic added successfully!');
+    if (!saved) return;
+
+    setShowAddTopicModal(false);
+    setNewTopic({ title: '', content: '', videoLink: '' });
+  };
+
+  const handleAddTopicCancel = () => {
+    setShowAddTopicModal(false);
+    setNewTopic({ title: '', content: '', videoLink: '' });
+  };
+
+  const openEditTopicModal = (index) => {
+    const topic = formData.topics[index];
+    if (!topic) return;
+
+    setEditTopicIndex(index);
+    setEditTopic({
+      title: topic.title || '',
+      content: topic.content || '',
+      videoLink: topic.videoLink || ''
+    });
+    setShowEditTopicModal(true);
+  };
+
+  const handleEditTopicCancel = () => {
+    setShowEditTopicModal(false);
+    setEditTopicIndex(null);
+    setEditTopic({ title: '', content: '', videoLink: '' });
+  };
+
+  const handleEditTopicConfirm = async () => {
+    if (!editTopic.title.trim()) {
+      showNotification('Topic title is required', 'error');
+      return;
+    }
+    if (!editTopic.content.trim()) {
+      showNotification('Topic content is required', 'error');
+      return;
+    }
+    if (editTopicIndex === null || !formData.topics[editTopicIndex]) {
+      showNotification('Topic not found', 'error');
+      return;
+    }
+
+    const newTopics = [...formData.topics];
+    const existingTopic = newTopics[editTopicIndex];
+    newTopics[editTopicIndex] = {
+      ...existingTopic,
+      title: editTopic.title,
+      content: editTopic.content,
+      videoLink: editTopic.videoLink
+    };
+
+    const saved = await persistContent(newTopics, 'Topic updated successfully!');
+    if (!saved) return;
+
+    setShowEditTopicModal(false);
+    setEditTopicIndex(null);
+    setEditTopic({ title: '', content: '', videoLink: '' });
+  };
+
+  const openDeleteTopicModal = (index) => {
+    setDeleteTopicIndex(index);
+    setShowDeleteTopicModal(true);
+  };
+
+  const handleDeleteTopicCancel = () => {
+    setShowDeleteTopicModal(false);
+    setDeleteTopicIndex(null);
+  };
+
+  const removeTopic = async (index) => {
+    const newTopics = formData.topics
+      .filter((_, i) => i !== index)
+      .map((topic, i) => ({ ...topic, order: i }));
+
+    return persistContent(newTopics, 'Topic deleted successfully!');
+  };
+
+  const handleDeleteTopicConfirm = async () => {
+    if (deleteTopicIndex === null) return;
+
+    const saved = await removeTopic(deleteTopicIndex);
+    if (!saved) return;
+
+    setShowDeleteTopicModal(false);
+    setDeleteTopicIndex(null);
+  };
+
+  const moveTopicUp = async (index) => {
+    if (index === 0) return;
+    const newTopics = [...formData.topics];
+    [newTopics[index], newTopics[index - 1]] = [newTopics[index - 1], newTopics[index]];
+    newTopics.forEach((topic, i) => {
+      topic.order = i;
+    });
+    await persistContent(newTopics, 'Topic order updated successfully!');
+  };
+
+  const moveTopicDown = async (index) => {
+    if (index === formData.topics.length - 1) return;
+    const newTopics = [...formData.topics];
+    [newTopics[index], newTopics[index + 1]] = [newTopics[index + 1], newTopics[index]];
+    newTopics.forEach((topic, i) => {
+      topic.order = i;
+    });
+    await persistContent(newTopics, 'Topic order updated successfully!');
+  };
+
+  if (loading) {
+    return <div className="admin-loading">Loading...</div>;
+  }
+
+  if (!selectedSubject) {
+    return (
+      <div className="admin-theory-content">
+        <div className="admin-header">
+          <h1>Manage NExT Subject Content</h1>
+          <button onClick={backToStepPage} className="back-button">
+            ← Back to Subjects
+          </button>
+        </div>
+        <div className="content-form-container">
+          <p className="no-topics">Subject not found.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="admin-theory-content">
+      <div className="admin-header">
+        <h1>Manage NExT Subject Content</h1>
+        <button onClick={backToStepPage} className="back-button">
+          ← Back to Subjects
+        </button>
+      </div>
+
+      {notification && (
+        <div className={`notification ${notification.type}`}>
+          {notification.message}
+        </div>
+      )}
+
+      <div className="content-form-container">
+        <div className="subject-selector">
+          <div className="admin-subject-bank-header">
+            <h2>{selectedSubject.name}</h2>
+            <p>{getStepLabel(selectedSubject.step)} | Add or update this subject content below.</p>
+          </div>
+        </div>
+
+        <div className="theory-content-form">
+          <div className="form-section topics-section">
+            <div className="section-header">
+              <h2>Topics</h2>
+              <button type="button" onClick={addTopic} className="add-topic-btn" disabled={saving}>
+                + Add Topic
+              </button>
+            </div>
+
+            {formData.topics.length === 0 ? (
+              <p className="no-topics">No topics added yet. Click "Add Topic" to start.</p>
+            ) : (
+              <div className="topics-list">
+                {formData.topics.map((topic, index) => (
+                  <div key={index} className="topic-card">
+                    <div className="topic-header">
+                      <h3>Topic {index + 1}</h3>
+                      <div className="topic-actions">
+                        <button
+                          type="button"
+                          onClick={() => moveTopicUp(index)}
+                          disabled={index === 0 || saving}
+                          className="move-btn"
+                        >
+                          ↑
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => moveTopicDown(index)}
+                          disabled={index === formData.topics.length - 1 || saving}
+                          className="move-btn"
+                        >
+                          ↓
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openEditTopicModal(index)}
+                          disabled={saving}
+                          className="update-btn"
+                        >
+                          Update
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openDeleteTopicModal(index)}
+                          disabled={saving}
+                          className="remove-btn"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="topic-summary">
+                      <p><strong>Title:</strong> {topic.title || 'Untitled topic'}</p>
+                      <p><strong>Content:</strong> {getTopicPreviewText(topic.content)}</p>
+                      <p><strong>Video:</strong> {topic.videoLink || 'No video link'}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {showAddTopicModal && (
+        <div className="modal-overlay" onClick={handleAddTopicCancel}>
+          <div className="modal-content large-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Add New Topic</h3>
+            <div className="topic-form-fields">
+              <div className="form-group">
+                <label>Topic Title *</label>
+                <input
+                  type="text"
+                  value={newTopic.title}
+                  onChange={(e) => setNewTopic({ ...newTopic, title: e.target.value })}
+                  placeholder="Enter topic title"
+                />
+              </div>
+              <div className="form-group">
+                <label>Topic Content *</label>
+                <ReactQuill
+                  value={newTopic.content}
+                  onChange={(value) => setNewTopic({ ...newTopic, content: value })}
+                  modules={quillModules}
+                  placeholder="Enter topic content"
+                />
+              </div>
+              <div className="form-group">
+                <label>Video Link (Optional)</label>
+                <input
+                  type="url"
+                  value={newTopic.videoLink}
+                  onChange={(e) => setNewTopic({ ...newTopic, videoLink: e.target.value })}
+                  placeholder="https://youtube.com/watch?v=..."
+                />
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button onClick={handleAddTopicCancel} className="cancel-btn">Cancel</button>
+              <button onClick={handleAddTopicConfirm} className="confirm-btn" disabled={saving}>Add Topic</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showEditTopicModal && (
+        <div className="modal-overlay" onClick={handleEditTopicCancel}>
+          <div className="modal-content large-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Edit Topic</h3>
+            <div className="topic-form-fields">
+              <div className="form-group">
+                <label>Topic Title *</label>
+                <input
+                  type="text"
+                  value={editTopic.title}
+                  onChange={(e) => setEditTopic({ ...editTopic, title: e.target.value })}
+                  placeholder="Enter topic title"
+                />
+              </div>
+              <div className="form-group">
+                <label>Topic Content *</label>
+                <ReactQuill
+                  value={editTopic.content}
+                  onChange={(value) => setEditTopic({ ...editTopic, content: value })}
+                  modules={quillModules}
+                  placeholder="Enter topic content"
+                />
+              </div>
+              <div className="form-group">
+                <label>Video Link (Optional)</label>
+                <input
+                  type="url"
+                  value={editTopic.videoLink}
+                  onChange={(e) => setEditTopic({ ...editTopic, videoLink: e.target.value })}
+                  placeholder="https://youtube.com/watch?v=..."
+                />
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button onClick={handleEditTopicCancel} className="cancel-btn">Cancel</button>
+              <button onClick={handleEditTopicConfirm} className="confirm-btn" disabled={saving}>Update Topic</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showDeleteTopicModal && (
+        <div className="modal-overlay" onClick={handleDeleteTopicCancel}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Delete Topic</h3>
+            <p>Are you sure you want to delete this topic?</p>
+            <div className="modal-actions">
+              <button onClick={handleDeleteTopicCancel} className="cancel-btn">Cancel</button>
+              <button onClick={handleDeleteTopicConfirm} className="delete-confirm-btn" disabled={saving}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default AdminNEXTSubjectContent;

@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
 const plabTheorySubjectSchema = new mongoose.Schema({
+  examType: {
+    type: String,
+    enum: ['PLAB_1', 'PLAB_2'],
+    default: 'PLAB_1',
+    index: true
+  },
   name: {
     type: String,
     required: true,
@@ -42,5 +48,6 @@ const plabTheorySubjectSchema = new mongoose.Schema({
 
 // Index for faster queries
 plabTheorySubjectSchema.index({ weightage: 1, order: 1 });
+plabTheorySubjectSchema.index({ examType: 1, weightage: 1, order: 1 });
 
 module.exports = mongoose.model('PlabTheorySubject', plabTheorySubjectSchema);

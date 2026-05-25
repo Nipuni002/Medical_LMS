@@ -1,0 +1,104 @@
+.usmle-step1-introduction-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at 14% 16%, rgba(125, 211, 252, 0.28) 0%, rgba(125, 211, 252, 0) 36%),
+    radial-gradient(circle at 88% 18%, rgba(191, 219, 254, 0.28) 0%, rgba(191, 219, 254, 0) 38%),
+    linear-gradient(145deg, #f0fdfa 0%, #ecfeff 42%, #f0f9ff 100%);
+}
+
+.usmle-step1-introduction-content {
+  flex: 1;
+  margin-top: 80px;
+  width: min(1040px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 22px 20px 34px;
+}
+
+.usmle-step1-introduction-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  background: rgba(29, 78, 216, 0.14);
+  color: #1e3a8a;
+  border: 1px solid rgba(96, 165, 250, 0.36);
+  border-radius: 16px;
+  padding: 22px 20px;
+  box-shadow: 0 12px 26px rgba(30, 64, 175, 0.16);
+}
+
+.usmle-step1-introduction-hero h1 {
+  margin: 0;
+  font-size: 1.45rem;
+}
+
+.usmle-step1-introduction-hero p {
+  margin: 8px 0 0;
+}
+
+.intro-back-btn {
+  border: 1px solid #1d4ed8;
+  border-radius: 10px;
+  background: #1d4ed8;
+  color: #ffffff;
+  min-height: 44px;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.intro-back-btn:hover {
+  background: #2563eb;
+}
+
+.usmle-step1-introduction-panel {
+  margin-top: 18px;
+  border: 1px solid rgba(96, 165, 250, 0.34);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.55);
+  padding: 18px;
+  box-shadow: 0 10px 22px rgba(30, 64, 175, 0.1);
+}
+
+.intro-empty-state {
+  margin: 10px;
+  color: #1e40af;
+}
+
+.intro-sections {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.intro-section-card {
+  border: 1px solid rgba(96, 165, 250, 0.32);
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 16px;
+}
+
+.intro-section-card h3 {
+  margin: 0 0 10px;
+  color: #1d4ed8;
+}
+
+.intro-section-content {
+  color: #1e3a8a;
+  line-height: 1.65;
+}
+
+@media (max-width: 768px) {
+  .usmle-step1-introduction-content {
+    margin-top: 70px;
+    padding: 14px 12px 24px;
+  }
+
+  .usmle-step1-introduction-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

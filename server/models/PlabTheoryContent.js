@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
 const plabTheoryContentSchema = new mongoose.Schema({
+  examType: {
+    type: String,
+    enum: ['PLAB_1', 'PLAB_2'],
+    default: 'PLAB_1',
+    index: true
+  },
   subjectId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'PlabTheorySubject',
@@ -54,5 +60,6 @@ const plabTheoryContentSchema = new mongoose.Schema({
 // Index for faster queries
 plabTheoryContentSchema.index({ subjectId: 1 });
 plabTheoryContentSchema.index({ isPublished: 1 });
+plabTheoryContentSchema.index({ examType: 1, isPublished: 1 });
 
 module.exports = mongoose.model('PlabTheoryContent', plabTheoryContentSchema);

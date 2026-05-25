@@ -10,6 +10,22 @@ function PLAB1Tips() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const sanitizeTipHtml = (html = '') => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    doc.querySelectorAll('script, iframe, object, embed').forEach((node) => node.remove());
+    doc.querySelectorAll('*').forEach((node) => {
+      [...node.attributes].forEach((attr) => {
+        if (attr.name.startsWith('on')) {
+          node.removeAttribute(attr.name);
+        }
+      });
+    });
+
+    return doc.body.innerHTML;
+  };
+
   useEffect(() => {
     fetchPlab1TipsContent();
   }, []);
@@ -84,24 +100,13 @@ function PLAB1Tips() {
       <div className="tips-container">
         {content.sections && content.sections.length > 0 && (
           <div className="tips-sections">
-            {content.sections.sort((a, b) => a.order - b.order).map((section, index) => (
+            {[...content.sections].sort((a, b) => a.order - b.order).map((section) => (
               <div key={section._id} className="tip-section">
                 <h2 className="tip-heading">{section.heading}</h2>
-                <div className="tip-content">
-                  {section.content.split('\n').map((line, i) => {
-                    if (line.trim().startsWith('•') || line.trim().startsWith('-')) {
-                      return (
-                        <div key={i} className="tip-bullet">
-                          <span className="bullet-point">•</span>
-                          <span>{line.replace(/^[•\-]\s*/, '')}</span>
-                        </div>
-                      );
-                    } else if (line.trim()) {
-                      return <p key={i} className="tip-text">{line}</p>;
-                    }
-                    return null;
-                  })}
-                </div>
+                <div
+                  className="tip-content"
+                  dangerouslySetInnerHTML={{ __html: sanitizeTipHtml(section.content || '') }}
+                />
               </div>
             ))}
           </div>

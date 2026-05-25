@@ -54,6 +54,30 @@
   box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);
 }
 
+.weightage-badge.high {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);
+}
+
+.weightage-badge.moderate {
+  background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.35);
+}
+
+.weightage-badge.low {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.35);
+}
+
+.weightage-badge.other {
+  background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(100, 116, 139, 0.3);
+}
+
 .badge-icon {
   font-size: 13px;
 }
@@ -210,9 +234,12 @@
   font-weight: 700;
 }
 
-.download-section {
+/* Action Buttons Section */
+.action-buttons-section {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
   margin: 20px 0;
   padding: 15px 0;
 }
@@ -274,6 +301,51 @@
   50% {
     transform: translateY(-3px);
   }
+}
+
+.revise-questions-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.35);
+  white-space: nowrap;
+}
+
+.revise-questions-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(16, 185, 129, 0.45);
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.revise-questions-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.revise-questions-btn .btn-icon {
+  font-size: 16px;
+}
+
+.revise-questions-btn .btn-text {
+  font-size: 14px;
+}
+
+.revise-questions-btn .btn-arrow {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.revise-questions-btn:hover .btn-arrow {
+  transform: translateX(4px);
 }
 
 .video-container {
@@ -464,6 +536,71 @@
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 }
 
+/* Revise Questions Section */
+.revise-questions-section {
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 2px solid #e0e7ff;
+  display: flex;
+  justify-content: center;
+}
+
+.revise-questions-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  min-width: 320px;
+  justify-content: center;
+}
+
+.revise-questions-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.revise-questions-btn:active {
+  transform: translateY(0);
+}
+
+.revise-questions-btn .btn-icon {
+  font-size: 20px;
+  animation: pulse 2s infinite;
+}
+
+.revise-questions-btn .btn-text {
+  flex: 1;
+  text-align: center;
+}
+
+.revise-questions-btn .btn-arrow {
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+.revise-questions-btn:hover .btn-arrow {
+  transform: translateX(4px);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
 @media (max-width: 992px) {
   .content-body {
     grid-template-columns: 1fr;
@@ -541,6 +678,16 @@
     animation: none;
   }
 
+  .action-buttons-section {
+    align-items: center;
+  }
+
+  .revise-questions-btn,
+  .pdf-download-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
   .topic-detail-header h2 {
     font-size: 24px;
   }
@@ -555,5 +702,16 @@
 
   .nav-btn:hover:not(:disabled) {
     transform: none;
+  }
+
+  .revise-questions-btn {
+    min-width: auto;
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 15px;
+  }
+
+  .revise-questions-btn .btn-icon {
+    font-size: 18px;
   }
 }

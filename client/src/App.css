@@ -1,8 +1,25 @@
 .App {
   min-height: 100vh;
   background-color: #fff;
+  transition: padding-left 0.25s ease;
+}
+
+.App.with-user-nav {
+  padding-left: 258px;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+@media (max-width: 900px) {
+  .App.with-user-nav {
+    padding-left: 226px;
+  }
+}
+
+@media (max-width: 768px) {
+  .App.with-user-nav {
+    padding-left: 0;
+  }
 }

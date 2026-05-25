@@ -1,10 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import './PLAB1Theory.css';
 
 function PLAB1Theory() {
+  const WEIGHTAGE_ORDER = [
+    'VERY HIGH WEIGHTAGE',
+    'HIGH WEIGHTAGE',
+    'MODERATE WEIGHTAGE',
+    'LOW WEIGHTAGE'
+  ];
+
+  const WEIGHTAGE_COLOR_MAP = {
+    'VERY HIGH WEIGHTAGE': '#1d4ed8',
+    'HIGH WEIGHTAGE': '#f97316',
+    'MODERATE WEIGHTAGE': '#16a34a',
+    'LOW WEIGHTAGE': '#7c3aed'
+  };
+
   const navigate = useNavigate();
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,84 +40,40 @@ function PLAB1Theory() {
     }
   };
 
-  const groupSubjectsByWeightage = () => {
-    const grouped = {
-      'VERY HIGH WEIGHTAGE': [],
-      'HIGH WEIGHTAGE': [],
-      'MODERATE WEIGHTAGE': [],
-      'LOW WEIGHTAGE': []
-    };
-
-    // Filter subjects based on search term
-    const filteredSubjects = subjects.filter(subject =>
+  const filteredSubjects = useMemo(() => {
+    return subjects.filter((subject) =>
       subject.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+  }, [subjects, searchTerm]);
 
-    filteredSubjects.forEach(subject => {
-      if (grouped[subject.weightage]) {
-        grouped[subject.weightage].push(subject);
-      }
+  const groupedSubjects = useMemo(() => {
+    const grouped = WEIGHTAGE_ORDER.reduce((acc, key) => {
+      acc[key] = [];
+      return acc;
+    }, {});
+
+    filteredSubjects.forEach((subject) => {
+      const key = WEIGHTAGE_ORDER.includes(subject.weightage) ? subject.weightage : 'MODERATE WEIGHTAGE';
+      grouped[key].push(subject);
     });
 
     return grouped;
-  };
+  }, [filteredSubjects]);
 
-  const getWeightageConfig = (weightage) => {
+  const getWeightageBadgeClass = (weightage) => {
     switch (weightage) {
       case 'VERY HIGH WEIGHTAGE':
-        return {
-          bgColor: '#1e40af',
-          borderColor: '#1d4ed8',
-          textColor: '#ffffff',
-          icon: '🔥',
-          badgeColor: '#dc2626',
-          label: 'VERY HIGH WEIGHTAGE (PASS-DECIDING)',
-          value: 10
-        };
+        return 'weightage-very-high';
       case 'HIGH WEIGHTAGE':
-        return {
-          bgColor: '#7c3aed',
-          borderColor: '#8b5cf6',
-          textColor: '#ffffff',
-          icon: '⚡',
-          badgeColor: '#ea580c',
-          label: 'HIGH WEIGHTAGE',
-          value: 8
-        };
+        return 'weightage-high';
       case 'MODERATE WEIGHTAGE':
-        return {
-          bgColor: '#0891b2',
-          borderColor: '#06b6d4',
-          textColor: '#ffffff',
-          icon: '⚖️',
-          badgeColor: '#16a34a',
-          label: 'MODERATE WEIGHTAGE',
-          value: 5
-        };
+        return 'weightage-moderate';
       case 'LOW WEIGHTAGE':
-        return {
-          bgColor: '#059669',
-          borderColor: '#10b981',
-          textColor: '#ffffff',
-          icon: '📘',
-          badgeColor: '#2563eb',
-          label: 'LOW WEIGHTAGE',
-          value: 4
-        };
+        return 'weightage-low';
       default:
-        return {
-          bgColor: '#64748b',
-          borderColor: '#94a3b8',
-          textColor: '#ffffff',
-          icon: '📝',
-          badgeColor: '#6b7280',
-          label: 'OTHER',
-          value: 0
-        };
+        return 'weightage-other';
     }
   };
-
-  const groupedSubjects = groupSubjectsByWeightage();
 
   if (loading) {
     return (
@@ -169,7 +139,7 @@ function PLAB1Theory() {
             </div>
           </div>
 
-          {searchTerm && Object.values(groupedSubjects).every(arr => arr.length === 0) ? (
+          {searchTerm && Object.values(groupedSubjects).every((arr) => arr.length === 0) ? (
             <div className="no-subjects-found">
               <span className="no-subjects-icon">🔍</span>
               <h3>No subjects found</h3>
@@ -182,32 +152,27 @@ function PLAB1Theory() {
               </button>
             </div>
           ) : (
-            Object.keys(groupedSubjects).map((weightage) => {
+            WEIGHTAGE_ORDER.map((weightage) => {
               const subjectsInCategory = groupedSubjects[weightage];
               if (subjectsInCategory.length === 0) return null;
-
-            const config = getWeightageConfig(weightage);
 
             return (
               <div key={weightage} className="weightage-section">
                 <div className="section-header">
-                  <span className="weightage-badge" style={{ backgroundColor: config.badgeColor }}>
-                    {config.icon} {config.label} ({config.value})
-                  </span>
+                  <span className={`weightage-badge ${getWeightageBadgeClass(weightage)}`}>{weightage}</span>
                   <span className="subject-count">{subjectsInCategory.length} topics</span>
                 </div>
                 
-                <div className="compact-grid">
+                <div className="subject-tabs" role="group" aria-label={`${weightage} PLAB subjects`}>
                   {subjectsInCategory.map((subject) => (
                     <button
                       key={subject._id}
-                      className="subject-item"
+                      className="subject-tab-btn"
                       style={{
-                        backgroundColor: config.bgColor,
-                        borderLeft: `4px solid ${config.borderColor}`
+                        '--subject-color': subject.color || WEIGHTAGE_COLOR_MAP[subject.weightage] || WEIGHTAGE_COLOR_MAP['MODERATE WEIGHTAGE']
                       }}
                       onClick={() => {
-                        navigate(`/theory/${subject._id}`);
+                        navigate(`/plab/plab1/theory/${subject._id}`);
                       }}
                     >
                       <span className="subject-name">{subject.name}</span>

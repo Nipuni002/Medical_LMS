@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './AdminTheorySubjects.css';
 
 function AdminTheorySubjects() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const examType = new URLSearchParams(location.search).get('exam') === 'PLAB_2' ? 'PLAB_2' : 'PLAB_1';
+  const examLabel = examType === 'PLAB_2' ? 'PLAB-2' : 'PLAB-1';
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -22,42 +25,54 @@ function AdminTheorySubjects() {
   const weightageConfig = {
     'VERY HIGH WEIGHTAGE': {
       value: 10,
-      colors: ['#1e3a8a', '#1e40af', '#1d4ed8'],
-      defaultColor: '#1e3a8a',
-      badgeColor: '#dc2626',
+      colors: ['#1d4ed8', '#3b82f6', '#60a5fa'],
+      defaultColor: '#1d4ed8',
+      badgeColor: '#1d4ed8',
       icon: '🔥',
       description: 'Critical pass-deciding topics'
     },
     'HIGH WEIGHTAGE': {
       value: 8,
-      colors: ['#2563eb', '#3b82f6', '#60a5fa'],
-      defaultColor: '#2563eb',
+      colors: ['#f97316', '#fb923c', '#fdba74'],
+      defaultColor: '#f97316',
       badgeColor: '#f97316',
       icon: '⚡',
       description: 'High importance topics'
     },
     'MODERATE WEIGHTAGE': {
       value: 5,
-      colors: ['#0ea5e9', '#38bdf8', '#7dd3fc'],
-      defaultColor: '#0ea5e9',
+      colors: ['#16a34a', '#22c55e', '#4ade80'],
+      defaultColor: '#16a34a',
       badgeColor: '#22c55e',
       icon: '⚖️',
       description: 'Moderately important topics'
     },
     'LOW WEIGHTAGE': {
       value: 4,
-      colors: ['#38bdf8', '#7dd3fc', '#bae6fd'],
-      defaultColor: '#38bdf8',
-      badgeColor: '#3b82f6',
+      colors: ['#7c3aed', '#8b5cf6', '#a78bfa'],
+      defaultColor: '#7c3aed',
+      badgeColor: '#7c3aed',
       icon: '📘',
       description: 'Supportive topics'
     }
   };
 
+  const weightageOrder = [
+    'VERY HIGH WEIGHTAGE',
+    'HIGH WEIGHTAGE',
+    'MODERATE WEIGHTAGE',
+    'LOW WEIGHTAGE'
+  ];
+
+  const getWeightageColor = (weightage) => {
+    const safeWeightage = weightageConfig[weightage] ? weightage : 'MODERATE WEIGHTAGE';
+    return weightageConfig[safeWeightage].defaultColor;
+  };
+
   useEffect(() => {
     checkAuth();
     fetchSubjects();
-  }, []);
+  }, [examType]);
 
   const checkAuth = () => {
     const token = localStorage.getItem('token');
@@ -68,10 +83,28 @@ function AdminTheorySubjects() {
 
   const fetchSubjects = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/plab-theory-subjects');
+      const response = await fetch(`http://localhost:5000/api/plab-theory-subjects?exam=${examType}`);
       const data = await response.json();
-      // Sort by name
-      const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
+      const normalizedData = Array.isArray(data)
+        ? data.map((subject) => {
+          const safeWeightage = weightageConfig[subject.weightage] ? subject.weightage : 'MODERATE WEIGHTAGE';
+          return {
+            ...subject,
+            weightage: safeWeightage,
+            weightageValue: Number.isFinite(Number(subject.weightageValue))
+              ? Number(subject.weightageValue)
+              : weightageConfig[safeWeightage].value,
+            color: getWeightageColor(safeWeightage)
+          };
+        })
+        : [];
+      // Sort by weightage priority then by subject name
+      const sortedData = normalizedData.sort((a, b) => {
+        if (a.weightageValue !== b.weightageValue) {
+          return b.weightageValue - a.weightageValue;
+        }
+        return a.name.localeCompare(b.name);
+      });
       setSubjects(sortedData);
       setLoading(false);
     } catch (error) {
@@ -128,7 +161,11 @@ function AdminTheorySubjects() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          examType,
+          color: getWeightageColor(formData.weightage)
+        })
       });
 
       if (response.ok) {
@@ -189,7 +226,7 @@ function AdminTheorySubjects() {
         name: subject.name,
         weightage: subject.weightage,
         weightageValue: subject.weightageValue,
-        color: subject.color
+        color: getWeightageColor(subject.weightage)
       });
     } else {
       setEditingSubject(null);
@@ -215,12 +252,10 @@ function AdminTheorySubjects() {
   };
 
   const groupSubjectsByWeightage = () => {
-    const grouped = {
-      'VERY HIGH WEIGHTAGE': [],
-      'HIGH WEIGHTAGE': [],
-      'MODERATE WEIGHTAGE': [],
-      'LOW WEIGHTAGE': []
-    };
+    const grouped = weightageOrder.reduce((acc, weightage) => {
+      acc[weightage] = [];
+      return acc;
+    }, {});
 
     // Filter subjects based on search term
     const filteredSubjects = subjects.filter(subject =>
@@ -231,6 +266,10 @@ function AdminTheorySubjects() {
       if (grouped[subject.weightage]) {
         grouped[subject.weightage].push(subject);
       }
+    });
+
+    weightageOrder.forEach((weightage) => {
+      grouped[weightage].sort((a, b) => a.name.localeCompare(b.name));
     });
 
     return grouped;
@@ -247,8 +286,7 @@ function AdminTheorySubjects() {
       <div className="admin-header">
         <div className="header-main">
           <div className="header-info">
-            <h1>PLAB-1 Theory Subjects Management</h1>
-            <p className="header-subtitle">Manage and organize subjects by weightage categories</p>
+            <h1>{examLabel} Theory Subjects Management</h1>
           </div>
           <div className="header-stats">
             <div className="stat-item">
@@ -259,8 +297,11 @@ function AdminTheorySubjects() {
         </div>
         
         <div className="header-actions">
-          <button onClick={() => navigate('/admin/dashboard')} className="btn-secondary">
-            <span className="btn-icon">←</span> Back to Dashboard
+          <button onClick={() => navigate('/admin/dashboard?section=plab-admin')} className="btn-secondary">
+            <span className="btn-icon">←</span> Back to PLAB Admin Section
+          </button>
+          <button onClick={() => navigate('/admin/subjects-content?category=plab')} className="btn-secondary">
+            <span className="btn-icon">📚</span> Manage {examLabel} Theory Content
           </button>
           <button onClick={handleLogout} className="btn-logout">
             <span className="btn-icon">🚪</span> Logout
@@ -313,7 +354,7 @@ function AdminTheorySubjects() {
             {/* Subjects Table Section */}
             <div className="subjects-table-container">
               <div className="table-header">
-                <h3>All Subjects Overview</h3>
+                <h3>Subjects Divided By Weightage</h3>
                 <span className="table-count">
                   {searchTerm 
                     ? `${filteredSubjects.length} of ${subjects.length} subjects` 
@@ -321,79 +362,91 @@ function AdminTheorySubjects() {
                   }
                 </span>
               </div>
-              
-              <div className="table-responsive">
-                <table className="subjects-table">
-                  <thead>
-                    <tr>
-                      <th className="col-name">Subject Name</th>
-                      <th className="col-weightage">Weightage</th>
-                      <th className="col-color">Color</th>
-                      <th className="col-actions">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredSubjects.length === 0 ? (
-                      <tr>
-                        <td colSpan="4" className="no-results">
-                          <div className="no-results-message">
-                            <span className="no-results-icon">🔍</span>
-                            <p>No subjects found matching "{searchTerm}"</p>
+
+              {filteredSubjects.length === 0 ? (
+                <div className="no-results">
+                  <div className="no-results-message">
+                    <span className="no-results-icon">🔍</span>
+                    <p>No subjects found matching "{searchTerm}"</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="weightage-groups">
+                  {weightageOrder.map((weightage) => {
+                    const subjectsInCategory = groupedSubjects[weightage];
+                    const config = weightageConfig[weightage];
+
+                    if (!subjectsInCategory || subjectsInCategory.length === 0) {
+                      return null;
+                    }
+
+                    return (
+                      <div key={weightage} className="weightage-group-section">
+                        <div className="weightage-group-header" style={{ borderLeftColor: config.defaultColor }}>
+                          <div className="group-title-wrap">
+                            <span className="group-icon">{config.icon}</span>
+                            <div>
+                              <h4>{weightage.replace(' WEIGHTAGE', '')} WEIGHTAGE</h4>
+                              <p>{config.description}</p>
+                            </div>
                           </div>
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredSubjects.map((subject) => {
-                      const config = weightageConfig[subject.weightage];
-                      return (
-                        <tr key={subject._id} className="subject-row">
-                          <td className="subject-name-cell">
-                            <div className="subject-name-content">
-                              <span 
-                                className="color-indicator" 
-                                style={{ backgroundColor: subject.color }}
-                              ></span>
-                              <span className="subject-name">{subject.name}</span>
-                            </div>
-                          </td>
-                          <td className="weightage-cell">
-                            <span className="weightage-badge" style={{ backgroundColor: config.badgeColor }}>
-                              {config.icon} {subject.weightage.replace(' WEIGHTAGE', '')}
-                            </span>
-                          </td>
-                          <td className="color-cell">
-                            <div className="color-display">
-                              <div 
-                                className="color-box" 
-                                style={{ backgroundColor: subject.color }}
-                              ></div>
-                              <span className="color-code">{subject.color}</span>
-                            </div>
-                          </td>
-                          <td className="actions-cell">
-                            <div className="action-buttons">
-                              <button
-                                onClick={() => openModal(subject)}
-                                className="btn-action btn-edit"
-                                title="Edit Subject"
-                              >
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => handleDeleteClick(subject._id)}
-                                className="btn-action btn-delete"
-                                title="Delete Subject"
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    }))}
-                  </tbody>
-                </table>
-              </div>
+                          <span className="group-count">{subjectsInCategory.length}</span>
+                        </div>
+
+                        <div className="table-responsive">
+                          <table className="subjects-table grouped-table">
+                            <thead>
+                              <tr>
+                                <th className="col-name">Subject Name</th>
+                                <th className="col-weightage">Weightage</th>
+                                <th className="col-actions">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {subjectsInCategory.map((subject) => (
+                                <tr key={subject._id} className="subject-row">
+                                  <td className="subject-name-cell">
+                                    <div className="subject-name-content">
+                                      <span
+                                        className="color-indicator"
+                                        style={{ backgroundColor: subject.color }}
+                                      ></span>
+                                      <span className="subject-name">{subject.name}</span>
+                                    </div>
+                                  </td>
+                                  <td className="weightage-cell">
+                                    <span className="weightage-badge" style={{ backgroundColor: config.badgeColor }}>
+                                      {config.icon} {subject.weightage.replace(' WEIGHTAGE', '')}
+                                    </span>
+                                  </td>
+                                  <td className="actions-cell">
+                                    <div className="action-buttons">
+                                      <button
+                                        onClick={() => openModal(subject)}
+                                        className="btn-action btn-edit"
+                                        title="Edit Subject"
+                                      >
+                                        Edit
+                                      </button>
+                                      <button
+                                        onClick={() => handleDeleteClick(subject._id)}
+                                        className="btn-action btn-delete"
+                                        title="Delete Subject"
+                                      >
+                                        Delete
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Weightage Summary Sidebar */}
@@ -517,51 +570,6 @@ function AdminTheorySubjects() {
                     </div>
                   </div>
 
-                </div>
-
-                <div className="form-group">
-                  <label>
-                    <span className="label-icon">🎨</span>
-                    Display Color
-                  </label>
-                  <div className="color-section">
-                    <div className="color-preview-row">
-                      <div 
-                        className="color-preview-box" 
-                        style={{ backgroundColor: formData.color }}
-                      ></div>
-                      <input
-                        type="text"
-                        value={formData.color}
-                        onChange={(e) => setFormData(prev => ({ ...prev, color: e.target.value }))}
-                        className="color-input"
-                        placeholder="#1e3a8a"
-                      />
-                    </div>
-                    
-                    <div className="color-suggestions">
-                      <span className="suggestions-label">Suggested colors for this weightage:</span>
-                      <div className="color-chips">
-                        {weightageConfig[formData.weightage].colors.map((color) => (
-                          <button
-                            key={color}
-                            type="button"
-                            className="color-chip"
-                            style={{ backgroundColor: color }}
-                            onClick={() => setFormData(prev => ({ ...prev, color }))}
-                            title={color}
-                          />
-                        ))}
-                      </div>
-                      <input
-                        type="color"
-                        name="color"
-                        value={formData.color}
-                        onChange={handleInputChange}
-                        className="color-picker"
-                      />
-                    </div>
-                  </div>
                 </div>
               </div>
 
