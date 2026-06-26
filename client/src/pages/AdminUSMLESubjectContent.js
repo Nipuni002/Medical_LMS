@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import API_BASE_URL from '../config/api';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './AdminTheoryContent.css';
@@ -87,7 +88,7 @@ function AdminUSMLESubjectContent() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/usmle-subjects');
+      const response = await fetch(`${API_BASE_URL}/api/usmle-subjects`);
       const subjects = await response.json();
       const subject = subjects.find((item) => item._id === subjectId);
 
@@ -111,7 +112,7 @@ function AdminUSMLESubjectContent() {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(
-        `http://localhost:5000/api/usmle-theory-content/subject/${id}`,
+        `${API_BASE_URL}/api/usmle-theory-content/subject/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -158,8 +159,8 @@ function AdminUSMLESubjectContent() {
     try {
       const token = localStorage.getItem('token');
       const url = content
-        ? `http://localhost:5000/api/usmle-theory-content/${content._id}`
-        : 'http://localhost:5000/api/usmle-theory-content';
+        ? `${API_BASE_URL}/api/usmle-theory-content/${content._id}`
+        : `${API_BASE_URL}/api/usmle-theory-content`;
 
       const method = content ? 'PUT' : 'POST';
 

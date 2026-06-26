@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import API_BASE_URL from '../config/api';
 import ReactQuill from 'react-quill';
 import { useNavigate } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
@@ -84,7 +85,7 @@ function AdminAMCStep2Pretest() {
   const fetchTest = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/plab-tests/admin/amc-step2-pretest', {
+      const response = await fetch(`${API_BASE_URL}/api/plab-tests/admin/amc-step2-pretest`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -273,8 +274,8 @@ function AdminAMCStep2Pretest() {
       };
 
       const endpoint = editingTest?._id
-        ? `http://localhost:5000/api/plab-tests/${editingTest._id}`
-        : 'http://localhost:5000/api/plab-tests';
+        ? `${API_BASE_URL}/api/plab-tests/${editingTest._id}`
+        : `${API_BASE_URL}/api/plab-tests`;
 
       const method = editingTest?._id ? 'PUT' : 'POST';
 

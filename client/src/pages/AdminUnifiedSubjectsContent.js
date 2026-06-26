@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import API_BASE_URL from '../config/api';
 import './AdminUnifiedSubjectsContent.css';
 
 const CATEGORY_CONFIG = {
   plab: {
     id: 'plab',
     label: 'PLAB',
-    subjectsApi: 'http://localhost:5000/api/plab-theory-subjects',
-    contentApi: 'http://localhost:5000/api/plab-theory-content',
+    subjectsApi: `${API_BASE_URL}/api/plab-theory-subjects`,
+    contentApi: `${API_BASE_URL}/api/plab-theory-content`,
     adminLabel: 'PLAB Admin',
     contentPath: (subjectId, step) => `/admin/theory-content/${subjectId}?exam=${step || 'PLAB_1'}`,
     supportsSteps: true,
@@ -23,8 +24,8 @@ const CATEGORY_CONFIG = {
   usmle: {
     id: 'usmle',
     label: 'USMLE',
-    subjectsApi: 'http://localhost:5000/api/usmle-subjects',
-    contentApi: 'http://localhost:5000/api/usmle-theory-content',
+    subjectsApi: `${API_BASE_URL}/api/usmle-subjects`,
+    contentApi: `${API_BASE_URL}/api/usmle-theory-content`,
     adminLabel: 'USMLE Admin',
     contentPath: (subjectId) => `/admin/usmle-content/${subjectId}`,
     supportsSteps: true,
@@ -41,8 +42,8 @@ const CATEGORY_CONFIG = {
   amc: {
     id: 'amc',
     label: 'AMC',
-    subjectsApi: 'http://localhost:5000/api/amc-subjects',
-    contentApi: 'http://localhost:5000/api/amc-theory-content',
+    subjectsApi: `${API_BASE_URL}/api/amc-subjects`,
+    contentApi: `${API_BASE_URL}/api/amc-theory-content`,
     adminLabel: 'AMC Admin',
     contentPath: (subjectId) => `/admin/amc-content/${subjectId}`,
     supportsSteps: true,

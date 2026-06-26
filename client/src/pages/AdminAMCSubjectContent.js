@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import API_BASE_URL from '../config/api';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './AdminTheoryContent.css';
@@ -86,7 +87,7 @@ function AdminAMCSubjectContent() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/amc-subjects');
+      const response = await fetch(`${API_BASE_URL}/api/amc-subjects`);
       const subjects = await response.json();
       const subject = subjects.find((item) => item._id === subjectId);
 
@@ -110,7 +111,7 @@ function AdminAMCSubjectContent() {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(
-        `http://localhost:5000/api/amc-theory-content/subject/${id}`,
+        `${API_BASE_URL}/api/amc-theory-content/subject/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -157,8 +158,8 @@ function AdminAMCSubjectContent() {
     try {
       const token = localStorage.getItem('token');
       const url = content
-        ? `http://localhost:5000/api/amc-theory-content/${content._id}`
-        : 'http://localhost:5000/api/amc-theory-content';
+        ? `${API_BASE_URL}/api/amc-theory-content/${content._id}`
+        : `${API_BASE_URL}/api/amc-theory-content`;
 
       const method = content ? 'PUT' : 'POST';
 

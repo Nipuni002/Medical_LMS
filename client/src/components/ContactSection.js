@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './ContactSection.css';
+import API_BASE_URL from '../config/api';
 
 function ContactSection() {
   const [title, setTitle] = useState('Contact Us');
@@ -39,7 +40,7 @@ function ContactSection() {
   useEffect(() => {
     const fetchContactContent = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/contact-content/home-contact');
+        const response = await fetch(`${API_BASE_URL}/api/contact-content/home-contact`);
         if (!response.ok) {
           return;
         }

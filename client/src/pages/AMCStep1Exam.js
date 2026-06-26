@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import API_BASE_URL from '../config/api';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -23,7 +24,7 @@ function AMCStep1Exam() {
   useEffect(() => {
     const fetchTest = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/plab-tests/amc-step1-pretest');
+        const response = await fetch(`${API_BASE_URL}/api/plab-tests/amc-step1-pretest`);
         const data = await response.json();
 
         if (!response.ok || !data.success || !data.data) {

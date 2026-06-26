@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import API_BASE_URL from '../config/api';
 import { useNavigate } from 'react-router-dom';
 import './AdminPlabContent.css';
 
@@ -84,7 +85,7 @@ const AdminContactContent = () => {
   const fetchContactContent = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/contact-content/admin/home-contact', {
+      const response = await fetch(`${API_BASE_URL}/api/contact-content/admin/home-contact`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -126,8 +127,8 @@ const AdminContactContent = () => {
 
     try {
       const endpoint = editingContent?._id
-        ? `http://localhost:5000/api/contact-content/${editingContent._id}`
-        : 'http://localhost:5000/api/contact-content';
+        ? `${API_BASE_URL}/api/contact-content/${editingContent._id}`
+        : `${API_BASE_URL}/api/contact-content`;
       const method = editingContent?._id ? 'PUT' : 'POST';
 
       const response = await fetch(endpoint, {

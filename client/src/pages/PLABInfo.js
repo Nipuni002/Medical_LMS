@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from '../config/api';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -32,7 +33,7 @@ function PLABInfo() {
 
   const fetchPlabContent = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/plab-content/what-is-plab');
+      const response = await fetch(`${API_BASE_URL}/api/plab-content/what-is-plab`);
       const data = await response.json();
       
       if (data.success) {

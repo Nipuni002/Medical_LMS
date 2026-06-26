@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from '../config/api';
 import ReactQuill from 'react-quill';
 import { useNavigate } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
@@ -74,7 +75,7 @@ const AdminPlab1Tips = () => {
   const fetchPlab1TipsContent = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/plab-content/plab1-tips', {
+      const response = await fetch(`${API_BASE_URL}/api/plab-content/plab1-tips`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -160,7 +161,7 @@ const AdminPlab1Tips = () => {
     setSavingSection(true);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/plab-content/${editingContent._id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/plab-content/${editingContent._id}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

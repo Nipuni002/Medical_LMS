@@ -30,7 +30,7 @@ function USMLEStep1Introduction() {
   useEffect(() => {
     const fetchIntroductionContent = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/usmle-introduction-content/step1');
+        const response = await fetch(`${API_BASE_URL}/api/usmle-introduction-content/step1`);
         const data = await response.json();
 
         if (data.success && data.data) {

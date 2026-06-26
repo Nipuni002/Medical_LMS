@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import API_BASE_URL from '../config/api';
 import ReactQuill from 'react-quill';
 import { useNavigate } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
@@ -110,7 +111,7 @@ function AdminUSMLEStep3Pretest() {
   const fetchTest = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/plab-tests/admin/usmle-step3-pretest', {
+      const response = await fetch(`${API_BASE_URL}/api/plab-tests/admin/usmle-step3-pretest`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -329,8 +330,8 @@ function AdminUSMLEStep3Pretest() {
       };
 
       let endpoint = editingTest?._id
-        ? `http://localhost:5000/api/plab-tests/${editingTest._id}`
-        : 'http://localhost:5000/api/plab-tests';
+        ? `${API_BASE_URL}/api/plab-tests/${editingTest._id}`
+        : `${API_BASE_URL}/api/plab-tests`;
       let method = editingTest?._id ? 'PUT' : 'POST';
 
       const response = await fetch(endpoint, {
@@ -347,7 +348,7 @@ function AdminUSMLEStep3Pretest() {
       // Handle duplicate slug error - fetch existing test and retry with PUT
       if (!data.success && data.error && data.error.includes('slug already exists')) {
         try {
-          const fetchResponse = await fetch('http://localhost:5000/api/plab-tests/admin/usmle-step3-pretest', {
+          const fetchResponse = await fetch(`${API_BASE_URL}/api/plab-tests/admin/usmle-step3-pretest`, {
             headers: {
               Authorization: `Bearer ${token}`
             }
@@ -359,7 +360,7 @@ function AdminUSMLEStep3Pretest() {
             const existingTest = fetchData.data;
             setEditingTest(existingTest);
 
-            endpoint = `http://localhost:5000/api/plab-tests/${existingTest._id}`;
+            endpoint = `${API_BASE_URL}/api/plab-tests/${existingTest._id}`;
             method = 'PUT';
 
             const retryResponse = await fetch(endpoint, {

@@ -13,7 +13,7 @@ function USMLEMain() {
         label: 'STEP 1',
         subtitle: 'Basic Science Foundation',
         icon: '🧠',
-        image: '/images/USMLE.jpg',
+        image: '/images/USMLE1.png',
         description:
           'Integrated basic sciences with pathology, pharmacology, and physiology in clinical context.',
         color: '#1E3A8A',
@@ -26,7 +26,7 @@ function USMLEMain() {
         label: 'STEP 2 CK',
         subtitle: 'Clinical Knowledge',
         icon: '🩺',
-        image: '/images/Step2.jpg',
+        image: '/images/USMLE2.png',
         description:
           'Diagnosis and management across core disciplines with high-yield patient-centered scenarios.',
         color: '#1D4ED8',
@@ -39,8 +39,7 @@ function USMLEMain() {
         label: 'STEP 3',
         subtitle: 'Independent Medical Practice',
         icon: '🏥',
-        image:
-          'https://images.unsplash.com/photo-1580281657527-47f249e8f4df?auto=format&fit=crop&w=1200&h=700&q=80',
+        image: '/images/USMLE3.png',
         description:
           'Advanced decision-making and readiness for unsupervised medical practice.',
         color: '#1E40AF',

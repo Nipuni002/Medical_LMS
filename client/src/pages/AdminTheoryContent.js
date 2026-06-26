@@ -26,7 +26,7 @@ function AdminTheoryContent() {
 
   const fetchSubjects = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/plab-theory-subjects?exam=${examType}`);
+      const response = await fetch(`${API_BASE_URL}/api/plab-theory-subjects?exam=${examType}`);
       const data = await response.json();
       setSubjects(data);
       setLoading(false);

@@ -15,14 +15,30 @@
   gap: 2rem;
 }
 
+.footer-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 860px;
+  flex: 1;
+}
+
 .footer p {
   color: #94a3b8;
   font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.footer-disclaimer {
+  max-width: 100%;
 }
 
 .footer-links {
   display: flex;
   gap: 2rem;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .footer-links a {
@@ -56,6 +72,10 @@
   .footer-container {
     flex-direction: column;
     text-align: center;
+  }
+
+  .footer-copy {
+    align-items: center;
   }
   
   .footer-links {
