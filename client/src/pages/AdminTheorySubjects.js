@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from '../config/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './AdminTheorySubjects.css';
 
@@ -83,7 +84,7 @@ function AdminTheorySubjects() {
 
   const fetchSubjects = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/plab-theory-subjects?exam=${examType}`);
+      const response = await fetch(`${API_BASE_URL}/api/plab-theory-subjects?exam=${examType}`);
       const data = await response.json();
       const normalizedData = Array.isArray(data)
         ? data.map((subject) => {
@@ -150,8 +151,8 @@ function AdminTheorySubjects() {
     try {
       const token = localStorage.getItem('token');
       const url = editingSubject
-        ? `http://localhost:5000/api/plab-theory-subjects/${editingSubject._id}`
-        : 'http://localhost:5000/api/plab-theory-subjects';
+        ? `${API_BASE_URL}/api/plab-theory-subjects/${editingSubject._id}`
+        : `${API_BASE_URL}/api/plab-theory-subjects`;
       
       const method = editingSubject ? 'PUT' : 'POST';
 
@@ -193,7 +194,7 @@ function AdminTheorySubjects() {
   const handleDelete = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/plab-theory-subjects/${deleteId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/plab-theory-subjects/${deleteId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

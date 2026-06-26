@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from '../config/api';
 import ReactQuill from 'react-quill';
 import { useNavigate } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
@@ -79,7 +80,7 @@ const AdminPlab2Guide = () => {
   const fetchPlab2GuideContent = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/plab-content/plab2-tips', {
+      const response = await fetch(`${API_BASE_URL}/api/plab-content/plab2-tips`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -172,8 +173,8 @@ const AdminPlab2Guide = () => {
   const persistContent = async (payload, successMessage) => {
     const token = localStorage.getItem('token');
     const url = editingContent?._id
-      ? `http://localhost:5000/api/plab-content/${editingContent._id}`
-      : 'http://localhost:5000/api/plab-content';
+      ? `${API_BASE_URL}/api/plab-content/${editingContent._id}`
+      : `${API_BASE_URL}/api/plab-content`;
     const method = editingContent?._id ? 'PUT' : 'POST';
 
     try {

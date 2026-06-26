@@ -142,7 +142,7 @@ function USMLEStep3BlockExam() {
   useEffect(() => {
     const fetchTest = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/plab-tests/usmle-step3-pretest');
+        const response = await fetch(`${API_BASE_URL}/api/plab-tests/usmle-step3-pretest`);
         const data = await response.json();
 
         if (!data.success || !data.data) {

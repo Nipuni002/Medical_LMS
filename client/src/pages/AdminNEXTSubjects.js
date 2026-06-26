@@ -71,7 +71,7 @@ function AdminNEXTSubjects() {
 
   const fetchSubjects = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/next-subjects');
+      const response = await fetch(`${API_BASE_URL}/api/next-subjects`);
       const data = await response.json();
       if (Array.isArray(data)) {
         setSubjects(data.map(normalizeSubject));
@@ -169,8 +169,8 @@ function AdminNEXTSubjects() {
     try {
       const token = localStorage.getItem('token');
       const url = editingSubject
-        ? `http://localhost:5000/api/next-subjects/${editingSubject._id}`
-        : 'http://localhost:5000/api/next-subjects';
+        ? `${API_BASE_URL}/api/next-subjects/${editingSubject._id}`
+        : `${API_BASE_URL}/api/next-subjects`;
       const method = editingSubject ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -212,7 +212,7 @@ function AdminNEXTSubjects() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/next-subjects/${subjectId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/next-subjects/${subjectId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`

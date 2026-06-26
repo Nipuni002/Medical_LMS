@@ -69,7 +69,7 @@ function AdminUSMLEIntroductionContent() {
 
   const fetchIntroductionContent = async (token) => {
     try {
-      const response = await fetch('http://localhost:5000/api/usmle-introduction-content/admin/step1', {
+      const response = await fetch(`${API_BASE_URL}/api/usmle-introduction-content/admin/step1`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -155,7 +155,7 @@ function AdminUSMLEIntroductionContent() {
     setSavingSection(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/usmle-introduction-content/step1', {
+      const response = await fetch(`${API_BASE_URL}/api/usmle-introduction-content/step1`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,

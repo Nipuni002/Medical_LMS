@@ -14,8 +14,7 @@ function AMCMain() {
         subtitle: 'Computer Adaptive Theory Assessment',
         description:
           'Test your clinical reasoning and foundational medical knowledge using adaptive MCQ scenarios.',
-        image:
-          'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1200&h=760&q=80',
+        image: '/images/AMC1.png',
         color: '#1d4ed8',
         accent: '#38bdf8'
       },
@@ -25,8 +24,7 @@ function AMCMain() {
         subtitle: 'Hands-on Clinical Skills Validation',
         description:
           'Practice communication, diagnosis, and patient-management skills in station-based OSCE format.',
-        image:
-          'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?auto=format&fit=crop&w=1200&h=760&q=80',
+        image: '/images/AMC2.png',
         color: '#2563eb',
         accent: '#93c5fd'
       }

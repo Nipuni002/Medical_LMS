@@ -119,7 +119,7 @@ const AdminPlab1Tests = () => {
   const fetchTest = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/plab-tests/admin/plab1-sba', {
+      const response = await fetch(`${API_BASE_URL}/api/plab-tests/admin/plab1-sba`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -291,8 +291,8 @@ const AdminPlab1Tests = () => {
       };
 
       const endpoint = editingTest?._id
-        ? `http://localhost:5000/api/plab-tests/${editingTest._id}`
-        : 'http://localhost:5000/api/plab-tests';
+        ? `${API_BASE_URL}/api/plab-tests/${editingTest._id}`
+        : `${API_BASE_URL}/api/plab-tests`;
 
       const method = editingTest?._id ? 'PUT' : 'POST';
 

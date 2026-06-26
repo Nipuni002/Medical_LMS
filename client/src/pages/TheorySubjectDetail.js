@@ -179,7 +179,7 @@ function TheorySubjectDetail() {
   const fetchContent = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/plab-theory-content/subject/${subjectId}?exam=${examType}`
+        `${API_BASE_URL}/api/plab-theory-content/subject/${subjectId}?exam=${examType}`
       );
       const result = await response.json();
 

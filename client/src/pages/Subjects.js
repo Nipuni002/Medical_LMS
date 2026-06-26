@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import API_BASE_URL from '../config/api';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -18,9 +19,9 @@ function Subjects() {
 
       try {
         const [plabRes, usmleRes, amcRes] = await Promise.all([
-          fetch('http://localhost:5000/api/plab-theory-subjects'),
-          fetch('http://localhost:5000/api/usmle-subjects'),
-          fetch('http://localhost:5000/api/amc-subjects')
+          fetch(`${API_BASE_URL}/api/plab-theory-subjects`),
+          fetch(`${API_BASE_URL}/api/usmle-subjects`),
+          fetch(`${API_BASE_URL}/api/amc-subjects`)
         ]);
 
         const [plabData, usmleData, amcData] = await Promise.all([

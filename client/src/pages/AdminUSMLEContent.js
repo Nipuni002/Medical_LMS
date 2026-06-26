@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import API_BASE_URL from '../config/api';
 import './AdminTheoryContent.css';
 
 const STEP_ORDER = ['STEP_1', 'STEP_2', 'STEP_3'];
@@ -70,7 +71,7 @@ function AdminUSMLEContent() {
 
   const fetchSubjects = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/usmle-subjects');
+      const response = await fetch(`${API_BASE_URL}/api/usmle-subjects`);
       const data = await response.json();
       setSubjects(Array.isArray(data) ? data : []);
     } catch (error) {

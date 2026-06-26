@@ -1,5 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useMemo, useState, useEffect } from 'react';import API_BASE_URL from '../config/api';import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import './PLAB1Theory.css';
@@ -30,7 +29,7 @@ function PLAB2Theory() {
 
   const fetchSubjects = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/plab-theory-subjects?exam=PLAB_2');
+      const response = await fetch(`${API_BASE_URL}/api/plab-theory-subjects?exam=PLAB_2`);
       const data = await response.json();
       setSubjects(data);
       setLoading(false);

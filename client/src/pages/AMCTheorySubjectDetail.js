@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import API_BASE_URL from '../config/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -167,7 +168,7 @@ function AMCTheorySubjectDetail() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/amc-theory-content/subject/${subjectId}`);
+        const response = await fetch(`${API_BASE_URL}/api/amc-theory-content/subject/${subjectId}`);
         const result = await response.json();
 
         if (result.success && result.data) {

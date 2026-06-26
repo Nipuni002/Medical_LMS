@@ -9,7 +9,7 @@ function PLAB2Guide() {
   useEffect(() => {
     const fetchPlab2Guide = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/plab-content/plab2-tips');
+        const response = await fetch(`${API_BASE_URL}/api/plab-content/plab2-tips`);
         const data = await response.json();
 
         if (data.success) {

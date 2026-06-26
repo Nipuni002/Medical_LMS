@@ -160,56 +160,32 @@
 }
 
 .logo-enhance {
-  background: linear-gradient(90deg, #1e40af 0%, #ff0044 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ff1744;
   font-weight: 800;
   position: relative;
   display: inline-block;
   margin-right: 8px;
-  background-size: 200% 200%;
-  animation: enhanceGradient 4s ease infinite;
-  filter: drop-shadow(0 2px 8px rgba(128, 0, 128, 0.28));
+  filter: drop-shadow(0 2px 10px rgba(255, 23, 68, 0.22));
 }
 
 .logo-medical {
-  background: linear-gradient(135deg, #66b3ff 0%, #99ccff 25%, #cce6ff 50%, #99ccff 75%, #66b3ff 100%);
+  background: linear-gradient(135deg, #00b4ff 0%, #39d5ff 30%, #7cdbff 55%, #1e88ff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-weight: 900;
   position: relative;
   display: inline-block;
-  background-size: 300% 300%;
-  animation: medicalGradient 5s ease infinite;
-  filter: drop-shadow(0 2px 12px rgba(153, 204, 255, 0.8));
-}
-
-/* Animations */
-@keyframes enhanceGradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes medicalGradient {
-  0% { background-position: 0% 50%; }
-  25% { background-position: 100% 50%; }
-  50% { background-position: 200% 50%; }
-  75% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  filter: drop-shadow(0 2px 12px rgba(0, 180, 255, 0.28));
 }
 
 /* Hover effects */
 .logo:hover .logo-enhance {
-  animation: enhanceGradient 2s ease infinite;
-  filter: drop-shadow(0 3px 12px rgba(255, 255, 255, 0.8));
+  filter: drop-shadow(0 3px 14px rgba(255, 23, 68, 0.35));
 }
 
 .logo:hover .logo-medical {
-  animation: medicalGradient 3s ease infinite;
-  filter: drop-shadow(0 3px 15px rgba(153, 204, 255, 1));
+  filter: drop-shadow(0 3px 16px rgba(0, 180, 255, 0.38));
 }
 
 /* For larger screens */
@@ -427,7 +403,7 @@
   }
   
   .logo-medical {
-    animation: medicalGradient 4s ease infinite; /* Slower animation on mobile */
+    filter: drop-shadow(0 2px 12px rgba(0, 180, 255, 0.28));
   }
   
   .logo-enhance {

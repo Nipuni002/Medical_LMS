@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';import API_BASE_URL from '../config/api';import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import './AMCStep2Exam.css';
@@ -18,7 +17,7 @@ function AMCStep2Exam() {
   useEffect(() => {
     const fetchTest = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/plab-tests/amc-step2-pretest');
+        const res = await fetch(`${API_BASE_URL}/api/plab-tests/amc-step2-pretest`);
         const data = await res.json();
         if (!res.ok || !data.success || !data.data) {
           setError('AMC Step 2 pretest is not available right now.');

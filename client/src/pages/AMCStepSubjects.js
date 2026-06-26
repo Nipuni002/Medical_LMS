@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';import API_BASE_URL from '../config/api';import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import './USMLEStep1Subjects.css';
@@ -23,7 +22,7 @@ function AMCStepSubjects({
   useEffect(() => {
     const fetchStepSubjects = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/amc-subjects?step=${step}`);
+        const response = await fetch(`${API_BASE_URL}/api/amc-subjects?step=${step}`);
         if (!response.ok) {
           setSubjects([]);
           return;

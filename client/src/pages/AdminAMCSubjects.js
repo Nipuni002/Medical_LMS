@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import API_BASE_URL from '../config/api';
 import { useNavigate } from 'react-router-dom';
 import './AdminUSMLESubjects.css';
 
@@ -71,7 +72,7 @@ function AdminAMCSubjects() {
 
   const fetchSubjects = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/amc-subjects');
+      const response = await fetch(`${API_BASE_URL}/api/amc-subjects`);
       const data = await response.json();
       if (Array.isArray(data)) {
         setSubjects(data.map(normalizeSubject));
@@ -169,8 +170,8 @@ function AdminAMCSubjects() {
     try {
       const token = localStorage.getItem('token');
       const url = editingSubject
-        ? `http://localhost:5000/api/amc-subjects/${editingSubject._id}`
-        : 'http://localhost:5000/api/amc-subjects';
+        ? `${API_BASE_URL}/api/amc-subjects/${editingSubject._id}`
+        : `${API_BASE_URL}/api/amc-subjects`;
       const method = editingSubject ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -212,7 +213,7 @@ function AdminAMCSubjects() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/amc-subjects/${subjectId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/amc-subjects/${subjectId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`

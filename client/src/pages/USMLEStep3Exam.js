@@ -141,7 +141,7 @@ function USMLEStep3Exam() {
   useEffect(() => {
     const fetchTest = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/plab-tests/usmle-step3-pretest');
+        const response = await fetch(`${API_BASE_URL}/api/plab-tests/usmle-step3-pretest`);
         const data = await response.json();
 
         console.log('USMLE Step 3 Exam fetch response:', { status: response.status, data });

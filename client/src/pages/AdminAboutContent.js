@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminPlabContent.css';
+import API_BASE_URL from '../config/api';
 
 const defaultSections = [
   {
@@ -62,7 +63,7 @@ const AdminAboutContent = () => {
   const fetchAboutContent = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/about-content/admin/home-about', {
+      const response = await fetch(`${API_BASE_URL}/api/about-content/admin/home-about`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -150,8 +151,8 @@ const AdminAboutContent = () => {
       };
 
       const endpoint = editingContent?._id
-        ? `http://localhost:5000/api/about-content/${editingContent._id}`
-        : 'http://localhost:5000/api/about-content';
+        ? `${API_BASE_URL}/api/about-content/${editingContent._id}`
+        : `${API_BASE_URL}/api/about-content`;
       const method = editingContent?._id ? 'PUT' : 'POST';
 
       const response = await fetch(endpoint, {

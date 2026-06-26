@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import API_BASE_URL from '../config/api';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './AdminTheoryContent.css';
@@ -79,7 +80,7 @@ function AdminTheorySubjectContent() {
     setLoading(true);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/plab-theory-subjects?exam=${examType}`);
+      const response = await fetch(`${API_BASE_URL}/api/plab-theory-subjects?exam=${examType}`);
       const subjects = await response.json();
       const subject = subjects.find((item) => item._id === subjectId);
 
@@ -103,7 +104,7 @@ function AdminTheorySubjectContent() {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(
-        `http://localhost:5000/api/plab-theory-content/subject/${id}?exam=${examType}`,
+        `${API_BASE_URL}/api/plab-theory-content/subject/${id}?exam=${examType}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -150,8 +151,8 @@ function AdminTheorySubjectContent() {
     try {
       const token = localStorage.getItem('token');
       const url = content
-        ? `http://localhost:5000/api/plab-theory-content/${content._id}`
-        : 'http://localhost:5000/api/plab-theory-content';
+        ? `${API_BASE_URL}/api/plab-theory-content/${content._id}`
+        : `${API_BASE_URL}/api/plab-theory-content`;
 
       const method = content ? 'PUT' : 'POST';
 

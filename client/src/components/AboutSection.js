@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './AboutSection.css';
+import API_BASE_URL from '../config/api';
 
 function AboutSection() {
   const [title, setTitle] = useState('About us');
@@ -7,13 +8,13 @@ function AboutSection() {
     {
       heading: 'Who We Are',
       content:
-        'Enhance Medical Education is dedicated to helping medical students master their licensing and professional exams. We provide comprehensive study materials, practice questions, and expert-led courses covering all major medical subjects.',
+        'Enhance Medical Education provides the advanced curriculum and analytical tools necessary for medical professionals to excel in high-stakes licensing and board certification exams. Our platform is engineered for the busy clinician, offering a high-yield, streamlined approach that optimizes study time without compromising on depth.',
       order: 1
     },
     {
       heading: 'How We Help',
       content:
-        "Our platform combines innovative learning techniques with real-world medical knowledge to ensure you're fully prepared for your exams.",
+        "We blend sophisticated learning methodologies with current clinical standards, ensuring you are not only prepared to pass your examinations but also empowered to apply refined expertise directly to your practice.",
       order: 2
     }
   ]);
@@ -21,7 +22,7 @@ function AboutSection() {
   useEffect(() => {
     const fetchAboutContent = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/about-content/home-about');
+        const response = await fetch(`${API_BASE_URL}/api/about-content/home-about`);
         if (!response.ok) {
           return;
         }

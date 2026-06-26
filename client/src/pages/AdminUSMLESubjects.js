@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import API_BASE_URL from '../config/api';
 import { useNavigate } from 'react-router-dom';
 import './AdminUSMLESubjects.css';
 
@@ -72,7 +73,7 @@ function AdminUSMLESubjects() {
 
   const fetchSubjects = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/usmle-subjects');
+      const response = await fetch(`${API_BASE_URL}/api/usmle-subjects`);
       const data = await response.json();
       if (Array.isArray(data)) {
         setSubjects(data.map(normalizeSubject));
@@ -170,8 +171,8 @@ function AdminUSMLESubjects() {
     try {
       const token = localStorage.getItem('token');
       const url = editingSubject
-        ? `http://localhost:5000/api/usmle-subjects/${editingSubject._id}`
-        : 'http://localhost:5000/api/usmle-subjects';
+        ? `${API_BASE_URL}/api/usmle-subjects/${editingSubject._id}`
+        : `${API_BASE_URL}/api/usmle-subjects`;
       const method = editingSubject ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -213,7 +214,7 @@ function AdminUSMLESubjects() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/usmle-subjects/${subjectId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/usmle-subjects/${subjectId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`
