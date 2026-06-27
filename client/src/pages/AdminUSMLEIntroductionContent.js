@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import { useNavigate } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
+import API_BASE_URL from '../config/api';
 import './AdminPlabContent.css';
 
 function AdminUSMLEIntroductionContent() {

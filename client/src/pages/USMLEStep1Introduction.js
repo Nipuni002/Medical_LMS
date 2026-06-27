@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import API_BASE_URL from '../config/api';
 import './USMLEStep1Introduction.css';
 
 function USMLEStep1Introduction() {

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import API_BASE_URL from '../config/api';
 import './TheorySubjectDetail.css';
 
 function TheorySubjectDetail() {

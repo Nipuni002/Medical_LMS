@@ -27,22 +27,7 @@ function USMLEStep2PretestReview() {
     return doc.body.innerHTML;
   };
 
-  if (!test || !test.questions) {
-    return (
-      <div className="plab1-test-page">
-        <Header />
-        <main className="plab1-test-wrapper">
-          <div className="plab1-test-error">No completed USMLE pre-test found.</div>
-          <button className="review-primary" onClick={() => navigate('/exams/usmle/step2-pretest/exam')}>
-            Start Exam
-          </button>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  const sortedQuestions = [...test.questions].sort((a, b) => {
+  const sortedQuestions = [...(test?.questions || [])].sort((a, b) => {
     const blockA = Number(a.blockNumber) || 1;
     const blockB = Number(b.blockNumber) || 1;
     if (blockA !== blockB) {
@@ -68,6 +53,21 @@ function USMLEStep2PretestReview() {
 
     return sortedQuestions.map((question, index) => ({ question, index }));
   }, [reviewMode, sortedQuestions, answers]);
+
+  if (!test || !test.questions) {
+    return (
+      <div className="plab1-test-page">
+        <Header />
+        <main className="plab1-test-wrapper">
+          <div className="plab1-test-error">No completed USMLE pre-test found.</div>
+          <button className="review-primary" onClick={() => navigate('/exams/usmle/step2-pretest/exam')}>
+            Start Exam
+          </button>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="plab1-test-page">
