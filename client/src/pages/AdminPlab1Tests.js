@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import ReactQuill from 'react-quill';
 import { useNavigate } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
+import API_BASE_URL from '../config/api';
 import './AdminPlab1Tests.css';
 
 const EMPTY_QUESTION = {

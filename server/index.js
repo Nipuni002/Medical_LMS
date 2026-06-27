@@ -8,8 +8,24 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
-// Middleware
-app.use(cors());
+// Middleware — CORS
+const allowedOrigins = [
+  'http://localhost:3000',
+  process.env.CLIENT_URL, // Vercel frontend URL (set in Railway env variables)
+].filter(Boolean); // remove undefined if CLIENT_URL is not set
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (curl, mobile apps, server-to-server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS policy: origin ${origin} not allowed`));
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 // Routes

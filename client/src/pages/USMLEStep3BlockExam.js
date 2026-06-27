@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import API_BASE_URL from '../config/api';
 import './PLAB1Test.css';
 import './USMLEStep1Exam.css';
 

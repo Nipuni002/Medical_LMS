@@ -31,6 +31,25 @@ function PLAB1TestReview() {
     window.scrollTo(0, 0);
   }, []);
 
+  const questions = test?.questions || [];
+
+  const score = questions.reduce((total, question, index) => {
+    return total + (answers[index] === question.correctOption ? 1 : 0);
+  }, 0);
+
+  const totalQuestions = questions.length;
+  const percentageScore = Math.round((score / Math.max(totalQuestions, 1)) * 100);
+  const incorrectCount = totalQuestions - score;
+
+  const reviewedQuestions = useMemo(() => {
+    if (reviewMode === 'incorrect') {
+      return questions
+        .map((question, index) => ({ question, index }))
+        .filter(({ question, index }) => answers[index] !== question.correctOption);
+    }
+    return questions.map((question, index) => ({ question, index }));
+  }, [reviewMode, questions, answers]);
+
   if (!test || !test.questions) {
     return (
       <div className="plab1-test-page">
@@ -45,24 +64,6 @@ function PLAB1TestReview() {
       </div>
     );
   }
-
-  const score = test.questions.reduce((total, question, index) => {
-    return total + (answers[index] === question.correctOption ? 1 : 0);
-  }, 0);
-
-  const totalQuestions = test.questions.length;
-  const percentageScore = Math.round((score / totalQuestions) * 100);
-  const incorrectCount = totalQuestions - score;
-
-  const reviewedQuestions = useMemo(() => {
-    if (reviewMode === 'incorrect') {
-      return test.questions
-        .map((question, index) => ({ question, index }))
-        .filter(({ question, index }) => answers[index] !== question.correctOption);
-    }
-
-    return test.questions.map((question, index) => ({ question, index }));
-  }, [reviewMode, test.questions, answers]);
 
   return (
     <div className="plab1-test-page">
