@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import API_BASE_URL from '../config/api';
-import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import './PLAB1Tips.css';
 
 function PLAB1Tips() {
-  const navigate = useNavigate();
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -87,15 +85,7 @@ function PLAB1Tips() {
         </div>
       </div>
 
-      {/* Navigation Buttons */}
-      <div className="tips-nav-buttons">
-        <button className="tips-nav-btn theory-btn" onClick={() => navigate('/plab/plab1/theory')}>
-          Theory Bank
-        </button>
-        <button className="tips-nav-btn tests-btn" onClick={() => navigate('/plab/plab1/tests')}>
-          Tests
-        </button>
-      </div>
+
 
       {/* Tips Content */}
       <div className="tips-container">

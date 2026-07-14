@@ -87,16 +87,18 @@ function PLABMain() {
             
             {/* Sections Grid */}
             <div className="plab-sections-grid">
-              {sections.map((section) => (
-                <div 
-                  key={section.id} 
-                  className="plab-section-card"
-                  onClick={() => handleSectionClick(section.path)}
-                  style={{ 
-                    borderLeft: `4px solid ${section.accentColor}`,
-                    borderTop: `3px solid ${section.color}`
-                  }}
-                >
+              {sections.map((section) => {
+                const isClickable = !section.buttons;
+                return (
+                  <div 
+                    key={section.id} 
+                    className={`plab-section-card ${isClickable ? 'clickable' : ''}`}
+                    onClick={isClickable ? () => handleSectionClick(section.path) : undefined}
+                    style={{ 
+                      borderLeft: `4px solid ${section.accentColor}`,
+                      borderTop: `3px solid ${section.color}`
+                    }}
+                  >
                   <div className="plab-card-header" style={{ 
                     backgroundColor: section.color,
                     borderBottom: `2px solid ${section.accentColor}`
@@ -144,7 +146,8 @@ function PLABMain() {
                     </div>
                   )}
                 </div>
-              ))}
+              );
+            })}
             </div>
 
             {/* Info Cards */}

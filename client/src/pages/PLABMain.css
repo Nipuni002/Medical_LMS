@@ -111,7 +111,6 @@
   min-height: 380px;
 }
 
-/* Equal Height Cards */
 .plab-section-card {
   background: white;
   border-radius: 10px;
@@ -121,11 +120,14 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  cursor: pointer;
   border: 1px solid #E6F3FF;
 }
 
-.plab-section-card:hover {
+.plab-section-card.clickable {
+  cursor: pointer;
+}
+
+.plab-section-card.clickable:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 25px rgba(10, 36, 99, 0.15);
 }
@@ -152,7 +154,7 @@
   transition: transform 0.2s ease;
 }
 
-.plab-section-card:hover .card-icon {
+.plab-section-card.clickable:hover .card-icon {
   transform: scale(1.05);
 }
 
@@ -187,7 +189,7 @@
   transition: transform 0.4s ease;
 }
 
-.plab-section-card:hover .plab-section-image img {
+.plab-section-card.clickable:hover .plab-section-image img {
   transform: scale(1.05);
 }
 
@@ -283,7 +285,7 @@
   flex-shrink: 0;
 }
 
-.info-card {
+.plab-info-section .info-card {
   text-align: center;
   padding: 15px;
   background: #F8FAFC;
@@ -292,7 +294,7 @@
   border-top: 3px solid;
 }
 
-.info-card:hover {
+.plab-info-section .info-card:hover {
   transform: translateY(-4px);
   background: white;
   box-shadow: 0 8px 15px rgba(10, 36, 99, 0.1);
@@ -303,14 +305,14 @@
   margin-bottom: 10px;
 }
 
-.info-card h3 {
+.plab-info-section .info-card h3 {
   color: #0A2463;
   font-size: 1rem;
   margin-bottom: 6px;
   font-weight: 700;
 }
 
-.info-card p {
+.plab-info-section .info-card p {
   color: #5A6B8C;
   font-size: 0.8rem;
   line-height: 1.4;
