@@ -18,16 +18,12 @@ function Subjects() {
       setError('');
 
       try {
-        const [plabRes, usmleRes, amcRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/api/plab-theory-subjects`),
-          fetch(`${API_BASE_URL}/api/usmle-subjects`),
-          fetch(`${API_BASE_URL}/api/amc-subjects`)
+        const [plabRes] = await Promise.all([
+          fetch(`${API_BASE_URL}/api/plab-theory-subjects`)
         ]);
 
-        const [plabData, usmleData, amcData] = await Promise.all([
-          plabRes.ok ? plabRes.json() : [],
-          usmleRes.ok ? usmleRes.json() : [],
-          amcRes.ok ? amcRes.json() : []
+        const [plabData] = await Promise.all([
+          plabRes.ok ? plabRes.json() : []
         ]);
 
         const merged = [
@@ -37,20 +33,6 @@ function Subjects() {
             source: 'PLAB',
             step: '',
             contentPath: `/theory/${subject._id || `plab-${index}`}`
-          })),
-          ...(Array.isArray(usmleData) ? usmleData : []).map((subject, index) => ({
-            id: subject._id || `usmle-${index}`,
-            name: subject.name || 'Untitled Subject',
-            source: 'USMLE',
-            step: subject.step || '',
-            contentPath: `/exams/usmle/theory/${subject._id || `usmle-${index}`}`
-          })),
-          ...(Array.isArray(amcData) ? amcData : []).map((subject, index) => ({
-            id: subject._id || `amc-${index}`,
-            name: subject.name || 'Untitled Subject',
-            source: 'AMC',
-            step: subject.step || '',
-            contentPath: `/exams/amc/theory/${subject._id || `amc-${index}`}`
           }))
         ];
 

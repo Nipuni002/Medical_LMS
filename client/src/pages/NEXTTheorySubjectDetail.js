@@ -203,20 +203,63 @@ function NEXTTheorySubjectDetail() {
 
   const getVideoEmbedUrl = (videoLink) => {
     if (!videoLink) return null;
+    
+    const trimmedLink = videoLink.trim();
 
-    if (videoLink.includes('youtube.com') || videoLink.includes('youtu.be')) {
-      let videoId;
-      if (videoLink.includes('youtu.be/')) {
-        videoId = videoLink.split('youtu.be/')[1].split('?')[0];
-      } else if (videoLink.includes('v=')) {
-        videoId = videoLink.split('v=')[1].split('&')[0];
+    // YouTube formats
+    if (trimmedLink.includes('youtube.com') || trimmedLink.includes('youtu.be')) {
+      let videoId = null;
+
+      if (trimmedLink.includes('/shorts/')) {
+        const parts = trimmedLink.split('/shorts/');
+        if (parts[1]) {
+          videoId = parts[1].split(/[?#&]/)[0];
+        }
+      } else if (trimmedLink.includes('/embed/')) {
+        const parts = trimmedLink.split('/embed/');
+        if (parts[1]) {
+          videoId = parts[1].split(/[?#&]/)[0];
+        }
+      } else if (trimmedLink.includes('youtu.be/')) {
+        const parts = trimmedLink.split('youtu.be/');
+        if (parts[1]) {
+          videoId = parts[1].split(/[?#&]/)[0];
+        }
+      } else if (trimmedLink.includes('v=')) {
+        const parts = trimmedLink.split('v=');
+        if (parts[1]) {
+          videoId = parts[1].split(/[?#&]/)[0];
+        }
+      } else if (trimmedLink.includes('/v/')) {
+        const parts = trimmedLink.split('/v/');
+        if (parts[1]) {
+          videoId = parts[1].split(/[?#&]/)[0];
+        }
       }
+
       return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
     }
 
-    if (videoLink.includes('vimeo.com')) {
-      const videoId = videoLink.split('vimeo.com/')[1].split('?')[0];
+    // Vimeo formats
+    if (trimmedLink.includes('vimeo.com')) {
+      let videoId = null;
+      if (trimmedLink.includes('player.vimeo.com/video/')) {
+        const parts = trimmedLink.split('player.vimeo.com/video/');
+        if (parts[1]) {
+          videoId = parts[1].split(/[?#&]/)[0];
+        }
+      } else {
+        const parts = trimmedLink.split('vimeo.com/');
+        if (parts[1]) {
+          videoId = parts[1].split(/[?#&]/)[0];
+        }
+      }
       return videoId ? `https://player.vimeo.com/video/${videoId}` : null;
+    }
+
+    // If it's already an embed link (e.g. from other hosting services) or contains an iframe src
+    if (trimmedLink.startsWith('http') && (trimmedLink.includes('embed') || trimmedLink.includes('player'))) {
+      return trimmedLink;
     }
 
     return null;
