@@ -34,6 +34,7 @@ import PLAB1Tips from './pages/PLAB1Tips';
 import PLAB1Theory from './pages/PLAB1Theory';
 import PLAB2Theory from './pages/PLAB2Theory';
 import TheorySubjectDetail from './pages/TheorySubjectDetail';
+import ReviseQuestionsPage from './pages/ReviseQuestionsPage';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminPlabContent from './pages/AdminPlabContent';
@@ -61,7 +62,10 @@ import AdminAboutContent from './pages/AdminAboutContent';
 import AdminContactContent from './pages/AdminContactContent';
 import PLAB1Test from './pages/PLAB1Test';
 import PLAB1TestReview from './pages/PLAB1TestReview';
+import LegalPage from './pages/LegalPage';
+import AdminLegalContent from './pages/AdminLegalContent';
 import './App.css';
+
 
 function AppContent() {
   const location = useLocation();
@@ -158,6 +162,7 @@ function AppContent() {
         <Route path="/plab/plab1/theory/:subjectId" element={<TheorySubjectDetail />} />
         <Route path="/plab/plab2/theory/:subjectId" element={<TheorySubjectDetail />} />
         <Route path="/theory/:subjectId" element={<TheorySubjectDetail />} />
+        <Route path="/questions/:subjectId" element={<ReviseQuestionsPage />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/plab-content" element={<AdminPlabContent />} />
@@ -186,6 +191,10 @@ function AppContent() {
         <Route path="/admin/subjects-content" element={<AdminUnifiedSubjectsContent />} />
         <Route path="/admin/about-content" element={<AdminAboutContent />} />
         <Route path="/admin/contact-content" element={<AdminContactContent />} />
+        <Route path="/admin/legal-content" element={<AdminLegalContent />} />
+        <Route path="/privacy-policy" element={<LegalPage type="privacy-policy" />} />
+        <Route path="/terms-of-service" element={<LegalPage type="terms-of-service" />} />
+        <Route path="/disclaimer" element={<LegalPage type="disclaimer" />} />
       </Routes>
     </div>
   );

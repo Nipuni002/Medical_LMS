@@ -27,18 +27,87 @@ const plabTheoryContentSchema = new mongoose.Schema({
       required: true,
       trim: true
     },
+    description: {
+      type: String,
+      default: ''
+    },
     content: {
       type: String,
-      required: true
+      default: ''
     },
     videoLink: {
       type: String,
       trim: true
     },
+    videoLinks: [{
+      type: String,
+      trim: true
+    }],
+    pdfUrl: {
+      type: String,
+      trim: true,
+      default: ''
+    },
+    pdfs: [{
+      name: {
+        type: String,
+        required: true,
+        trim: true
+      },
+      url: {
+        type: String,
+        required: true
+      }
+    }],
     order: {
       type: Number,
       default: 0
-    }
+    },
+    mcqs: [{
+      question: {
+        type: String,
+        required: true,
+        trim: true
+      },
+      options: [{
+        type: String,
+        required: true
+      }],
+      correctOption: {
+        type: Number,
+        default: 0
+      },
+      explanation: {
+        type: String,
+        default: ''
+      }
+    }],
+    mcqSections: [{
+      title: {
+        type: String,
+        required: true,
+        trim: true
+      },
+      mcqs: [{
+        question: {
+          type: String,
+          required: true,
+          trim: true
+        },
+        options: [{
+          type: String,
+          required: true
+        }],
+        correctOption: {
+          type: Number,
+          default: 0
+        },
+        explanation: {
+          type: String,
+          default: ''
+        }
+      }]
+    }]
   }],
   isPublished: {
     type: Boolean,

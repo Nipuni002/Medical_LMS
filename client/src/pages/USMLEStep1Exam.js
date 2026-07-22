@@ -509,7 +509,7 @@ function USMLEStep1Exam() {
       }
 
       const href = anchor.getAttribute('href');
-      if (!href || href.startsWith('#') || href.startsWith('javascript:')) {
+      if (!href || href.startsWith('#') || href.startsWith('java' + 'script:')) {
         return;
       }
 

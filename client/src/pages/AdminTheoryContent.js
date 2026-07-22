@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import API_BASE_URL from '../config/api';
 import './AdminTheoryContent.css';
 
 function AdminTheoryContent() {
@@ -27,11 +28,24 @@ function AdminTheoryContent() {
   const fetchSubjects = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/plab-theory-subjects?exam=${examType}`);
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        showNotification(errData?.message || 'Error fetching subjects', 'error');
+        setSubjects([]);
+        setLoading(false);
+        return;
+      }
       const data = await response.json();
-      setSubjects(data);
+      if (Array.isArray(data)) {
+        setSubjects(data);
+      } else {
+        setSubjects([]);
+        showNotification(data?.message || 'Error fetching subjects', 'error');
+      }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching subjects:', error);
+      setSubjects([]);
       setLoading(false);
       showNotification('Error fetching subjects', 'error');
     }

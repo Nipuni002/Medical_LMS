@@ -102,7 +102,10 @@ router.put('/:id', protect, async (req, res) => {
 
     if (title !== undefined) content.title = title;
     if (description !== undefined) content.description = description;
-    if (topics !== undefined) content.topics = topics;
+    if (topics !== undefined) {
+      content.topics = topics;
+      content.markModified('topics');
+    }
     if (isPublished !== undefined) content.isPublished = isPublished;
     content.updatedBy = req.user.id;
 

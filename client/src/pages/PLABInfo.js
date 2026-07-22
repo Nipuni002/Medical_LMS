@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import API_BASE_URL from '../config/api';
-import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import './PLABInfo.css';
 
 function PLABInfo() {
-  const navigate = useNavigate();
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

@@ -85,6 +85,13 @@ function AdminTheorySubjects() {
   const fetchSubjects = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/plab-theory-subjects?exam=${examType}`);
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        showNotification(errData.message || 'Error fetching subjects from server', 'error');
+        setSubjects([]);
+        setLoading(false);
+        return;
+      }
       const data = await response.json();
       const normalizedData = Array.isArray(data)
         ? data.map((subject) => {
@@ -104,13 +111,15 @@ function AdminTheorySubjects() {
         if (a.weightageValue !== b.weightageValue) {
           return b.weightageValue - a.weightageValue;
         }
-        return a.name.localeCompare(b.name);
+        return (a.name || '').localeCompare(b.name || '');
       });
       setSubjects(sortedData);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching subjects:', error);
+      setSubjects([]);
       setLoading(false);
+      showNotification('Unable to connect to server. Please check backend server status.', 'error');
     }
   };
 

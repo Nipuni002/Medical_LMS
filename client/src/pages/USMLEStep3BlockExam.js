@@ -332,12 +332,6 @@ function USMLEStep3BlockExam() {
     };
   };
 
-  const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${minutes}:${secs.toString().padStart(2, '0')}`;
-  };
-
   const sanitizeExplanationHtml = (html = '') => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
@@ -396,12 +390,6 @@ function USMLEStep3BlockExam() {
     setIsBreakActive(false);
     localStorage.removeItem(getStep3BreakKey(examMode));
     navigate('/exams/usmle/step3-pretest');
-  };
-
-  const handleExitDayTwoExam = () => {
-    setIsBreakActive(false);
-    localStorage.removeItem(getStep3BreakKey(examMode));
-    navigate('/exams/usmle');
   };
 
   const handleReattemptDayTwoExam = () => {

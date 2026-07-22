@@ -57,6 +57,10 @@ function PLAB2Guide() {
         </div>
 
         <div className="plab2-guide-container">
+          <section className="plab2-guide-card">
+            <p>PLAB 2 Content is currently under active construction by our medical educators. Stay tuned for early access opportunities soon!</p>
+          </section>
+
           {content?.description && (
             <section className="plab2-guide-card">
               <p>{content.description}</p>

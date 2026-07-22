@@ -174,7 +174,10 @@ router.put('/:id', protect, async (req, res) => {
     // Update fields
     if (title !== undefined) content.title = title;
     if (description !== undefined) content.description = description;
-    if (topics !== undefined) content.topics = topics;
+    if (topics !== undefined) {
+      content.topics = topics;
+      content.markModified('topics');
+    }
     if (isPublished !== undefined) content.isPublished = isPublished;
     if (req.body.examType !== undefined) {
       content.examType = normalizeExamType(req.body.examType);
