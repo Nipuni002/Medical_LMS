@@ -42,6 +42,7 @@ function PLABMain() {
       accentColor: '#4CA1D5',
       path: '/plab/plab2',
       description: 'Prepare for the 16-station OSCE exam with clinical scenario simulations, communication skills training, and practical assessment guidance.',
+      notice: 'PLAB 2 Content is currently under active construction by our medical educators. Stay tuned for early access opportunities soon!',
       buttons: [
         { label: 'Theory bank', color: '#2A6EBB', path: '/plab/plab2/theory' },
         { label: 'Guide to PLAB-2', color: '#3E92CC', path: 'guide' },
@@ -127,6 +128,12 @@ function PLABMain() {
                   <div className="plab-card-content">
                     <p>{section.description}</p>
                   </div>
+
+                  {section.notice && (
+                    <div className="plab-card-notice">
+                      <p>{section.notice}</p>
+                    </div>
+                  )}
                   
                   {section.buttons && (
                     <div className="plab-section-buttons">

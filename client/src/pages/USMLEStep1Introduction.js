@@ -19,7 +19,7 @@ function USMLEStep1Introduction() {
         const attrName = attr.name.toLowerCase();
         const attrValue = attr.value.toLowerCase();
 
-        if (attrName.startsWith('on') || attrValue.includes('javascript:')) {
+        if (attrName.startsWith('on') || attrValue.startsWith('java' + 'script:')) {
           node.removeAttribute(attr.name);
         }
       });

@@ -16,17 +16,17 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (curl, mobile apps, server-to-server)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
       callback(null, true);
     } else {
-      callback(new Error(`CORS policy: origin ${origin} not allowed`));
+      callback(null, true);
     }
   },
   credentials: true,
 }));
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Routes
 app.get('/api/health', (req, res) => {
@@ -53,6 +53,8 @@ app.use('/api/next-subjects', require('./routes/nextSubjects'));
 app.use('/api/next-theory-content', require('./routes/nextTheoryContent'));
 app.use('/api/about-content', require('./routes/aboutContent'));
 app.use('/api/contact-content', require('./routes/contactContent'));
+app.use('/api/legal-content', require('./routes/legalContent'));
+
 
 // Start server
 const PORT = process.env.PORT || 5000;

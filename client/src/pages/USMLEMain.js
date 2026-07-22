@@ -115,6 +115,8 @@ function USMLEMain() {
             {tabs.map((tab) => (
               <article
                 key={tab.id}
+                role="button"
+                tabIndex={0}
                 aria-pressed={activeTab === tab.id}
                 className={`usmle-step-card ${activeTab === tab.id ? 'active' : ''}`}
                 onClick={() => setActiveTab(tab.id)}

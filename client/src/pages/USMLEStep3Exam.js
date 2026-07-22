@@ -396,22 +396,6 @@ function USMLEStep3Exam() {
       return blockState?.contentSignature === getStep3BlockSignature(blockQuestions);
     }).length;
 
-  const sanitizeExplanationHtml = (html = '') => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-
-    doc.querySelectorAll('script, iframe, object, embed').forEach((node) => node.remove());
-    doc.querySelectorAll('*').forEach((node) => {
-      [...node.attributes].forEach((attr) => {
-        if (attr.name.startsWith('on')) {
-          node.removeAttribute(attr.name);
-        }
-      });
-    });
-
-    return doc.body.innerHTML;
-  };
-
   if (loading) {
     return <div className="plab1-test-loading">Loading Step 3 exam...</div>;
   }

@@ -84,6 +84,8 @@ const AdminDashboard = () => {
       window.location.href = '/admin/about-content';
     } else if (sectionId === 'contact-content') {
       window.location.href = '/admin/contact-content';
+    } else if (sectionId === 'legal-content') {
+      window.location.href = '/admin/legal-content';
     } else {
       setActiveSection(sectionId);
     }
@@ -204,6 +206,12 @@ const AdminDashboard = () => {
       title: 'Manage Contact Us',
       icon: '📞',
       description: 'Add, update, and remove Contact Us resources, FAQ, and support details.'
+    },
+    {
+      id: 'legal-content',
+      title: 'Manage Privacy & Terms',
+      icon: '📜',
+      description: 'Add, update, and publish Privacy Policy, Terms of Service, and Disclaimer.'
     }
   ];
 

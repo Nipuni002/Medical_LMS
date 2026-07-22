@@ -975,3 +975,296 @@
 .modal-body .ql-container {
   min-height: 350px;
 }
+
+/* MCQ Management Styles */
+.mcq-manage-btn {
+  background: #0d9488;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.mcq-manage-btn:hover {
+  background: #0f766e;
+}
+
+.mcq-count-tag {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.mcq-modal-dialog {
+  max-width: 900px;
+  width: 90%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.mcq-modal-body {
+  overflow-y: auto;
+  max-height: calc(80vh - 120px);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.admin-mcq-list-section,
+.admin-mcq-editor-section {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.admin-mcq-list-section h3,
+.admin-mcq-editor-section h3 {
+  font-size: 16px;
+  color: #1e293b;
+  margin: 0 0 14px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.admin-mcqs-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-mcq-item {
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+.admin-mcq-item.editing {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.admin-mcq-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.q-badge {
+  background: #3b82f6;
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.q-item-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-mcq-btn,
+.del-mcq-btn {
+  border: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.edit-mcq-btn {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.del-mcq-btn {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.q-stem-text {
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.q-options-preview {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 8px 0;
+  font-size: 13px;
+
+}
+
+.q-options-preview li {
+  padding: 3px 0;
+  color: #475569;
+}
+
+.q-options-preview li.correct-opt {
+  color: #059669;
+  font-weight: 700;
+}
+
+.q-exp-preview {
+  font-size: 12px;
+  background: #f1f5f9;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #334155;
+}
+
+/* MCQ Form Controls */
+.options-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.add-opt-btn {
+  background: #e2e8f0;
+  color: #334155;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mcq-options-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.option-input-row input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.opt-prefix {
+  font-weight: 700;
+  color: #475569;
+  min-width: 18px;
+}
+
+.remove-opt-btn {
+  background: #fecaca;
+  color: #991b1b;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mcq-item-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.save-mcq-item-btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-mcq-item-btn:hover {
+  background: #1d4ed8;
+}
+
+.cancel-mcq-item-btn {
+  background: #e2e8f0;
+  color: #475569;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Admin Multi-Video & PDF Styles */
+.admin-video-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.video-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pdf-input-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pdf-file-input {
+  padding: 8px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 13px;
+}
+
+.pdf-attached-badge {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pdf-attached-badge button {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+

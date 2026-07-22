@@ -65,6 +65,10 @@ function PLAB2Pretest() {
       </div>
 
       <main className="plab2-pretest-container">
+        <section className="plab2-pretest-card intro-card">
+          <p>PLAB 2 Content is currently under active construction by our medical educators. Stay tuned for early access opportunities soon!</p>
+        </section>
+
         {content?.description && (
           <section className="plab2-pretest-card intro-card">
             <p>{content.description}</p>
