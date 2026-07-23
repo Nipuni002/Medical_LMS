@@ -35,6 +35,9 @@ import PLAB1Theory from './pages/PLAB1Theory';
 import PLAB2Theory from './pages/PLAB2Theory';
 import PLAB2Locked from './pages/PLAB2Locked';
 import TheorySubjectDetail from './pages/TheorySubjectDetail';
+import SpecialNotices from './pages/SpecialNotices';
+import AdminNoticesContent from './pages/AdminNoticesContent';
+import AdminUsersManagement from './pages/AdminUsersManagement';
 import ReviseQuestionsPage from './pages/ReviseQuestionsPage';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
@@ -164,6 +167,7 @@ function AppContent() {
         <Route path="/plab/plab2/theory/:subjectId" element={<PLAB2Locked />} />
         <Route path="/theory/:subjectId" element={<TheorySubjectDetail />} />
         <Route path="/questions/:subjectId" element={<ReviseQuestionsPage />} />
+        <Route path="/special-notices" element={<SpecialNotices />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/plab-content" element={<AdminPlabContent />} />
@@ -171,6 +175,8 @@ function AppContent() {
         <Route path="/admin/plab2-guide" element={<AdminPlab2Guide />} />
         <Route path="/admin/plab2-pretest" element={<AdminPlab2Pretest />} />
         <Route path="/admin/plab1-tests" element={<AdminPlab1Tests />} />
+        <Route path="/admin/notices-content" element={<AdminNoticesContent />} />
+        <Route path="/admin/users-admin" element={<AdminUsersManagement />} />
         <Route path="/admin/theory-subjects" element={<AdminTheorySubjects />} />
         <Route path="/admin/theory-content" element={<Navigate to="/admin/subjects-content?category=plab" replace />} />
         <Route path="/admin/theory-content/:subjectId" element={<AdminTheorySubjectContent />} />

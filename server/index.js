@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 const connectDB = require('./config/db');
 
+// Loaded SMTP config for registration thank you emails
 const app = express();
 
 // Connect to MongoDB
@@ -54,6 +55,8 @@ app.use('/api/next-theory-content', require('./routes/nextTheoryContent'));
 app.use('/api/about-content', require('./routes/aboutContent'));
 app.use('/api/contact-content', require('./routes/contactContent'));
 app.use('/api/legal-content', require('./routes/legalContent'));
+app.use('/api/notices', require('./routes/notices'));
+
 
 
 // Start server

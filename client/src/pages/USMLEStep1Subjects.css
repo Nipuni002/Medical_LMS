@@ -133,51 +133,61 @@
 .subject-tab-btn {
   position: relative;
   min-height: 68px;
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  background: linear-gradient(145deg, var(--subject-color) 0%, rgba(255, 255, 255, 0.24) 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(8px);
-  color: #111111;
+  border: 1.5px solid #e2e8f0;
+  border-left: 5px solid var(--subject-color);
+  background-color: #ffffff;
   border-radius: 12px;
-  padding: 10px 12px;
-  font-size: 0.86rem;
-  font-weight: 700;
-  line-height: 1.3;
+  padding: 10px 16px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.4;
   cursor: pointer;
-  transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
-  box-shadow: 0 7px 16px rgba(15, 23, 42, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.02);
   overflow: hidden;
+  color: #1e293b;
+  text-align: left;
 }
 
 .subject-tab-btn::before {
   content: '';
   position: absolute;
   top: 0;
-  left: -40%;
-  width: 140%;
+  left: 0;
+  width: 100%;
   height: 100%;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.04));
-  transform: translateX(-30%);
+  background-color: var(--subject-color);
+  opacity: 0.03;
   pointer-events: none;
-  transition: transform 0.35s ease;
+  transition: opacity 0.25s ease;
 }
 
 .subject-tab-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.45);
-  filter: brightness(1.08);
+  border-color: var(--subject-color);
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.06);
+  color: var(--subject-color);
 }
 
 .subject-tab-btn:hover::before {
-  transform: translateX(5%);
+  opacity: 0.08;
+}
+
+.subject-tab-btn:active {
+  transform: translateY(-1px);
 }
 
 .subject-tab-btn.active {
-  color: #111111;
-  transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 14px 26px rgba(20, 73, 119, 0.32), 0 0 0 1px rgba(255, 255, 255, 0.55) inset;
-  outline: 3px solid rgba(255, 255, 255, 0.8);
-  outline-offset: -4px;
+  background-color: var(--subject-color);
+  border-color: var(--subject-color);
+  color: #ffffff !important;
+}
+
+.subject-tab-btn.active::before {
+  opacity: 0;
 }
 
 .subject-tab-btn.introduction-tab-btn {

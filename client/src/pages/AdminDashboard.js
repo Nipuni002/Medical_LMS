@@ -30,6 +30,7 @@ const AdminDashboard = () => {
 
   const menuItems = [
     { id: 'overview', label: 'Course Dashboard', icon: '🏠' },
+    { id: 'users-admin', label: 'User Management', icon: '👥' },
     { id: 'plab-admin', label: 'PLAB Admin Section', icon: '🎯' },
     { id: 'usmle-admin', label: 'USMLE Admin Section', icon: '🩺' },
     { id: 'amc-admin', label: 'AMC Admin Section', icon: '🇦🇺' },
@@ -38,7 +39,9 @@ const AdminDashboard = () => {
   ];
 
   const handleNavigation = (sectionId) => {
-    if (sectionId === 'theory-subjects') {
+    if (sectionId === 'users-admin') {
+      window.location.href = '/admin/users-admin';
+    } else if (sectionId === 'theory-subjects') {
       window.location.href = '/admin/theory-subjects';
     } else if (sectionId === 'theory-content') {
       window.location.href = '/admin/subjects-content?category=plab';
@@ -86,6 +89,8 @@ const AdminDashboard = () => {
       window.location.href = '/admin/contact-content';
     } else if (sectionId === 'legal-content') {
       window.location.href = '/admin/legal-content';
+    } else if (sectionId === 'notices-content') {
+      window.location.href = '/admin/notices-content';
     } else {
       setActiveSection(sectionId);
     }
@@ -212,6 +217,12 @@ const AdminDashboard = () => {
       title: 'Manage Privacy & Terms',
       icon: '📜',
       description: 'Add, update, and publish Privacy Policy, Terms of Service, and Disclaimer.'
+    },
+    {
+      id: 'notices-content',
+      title: 'Manage Special Notices',
+      icon: '📢',
+      description: 'Create, update, and delete special notices and news shown to registered users.'
     }
   ];
 
