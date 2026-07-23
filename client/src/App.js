@@ -33,6 +33,7 @@ import PLAB2Pretest from './pages/PLAB2Pretest';
 import PLAB1Tips from './pages/PLAB1Tips';
 import PLAB1Theory from './pages/PLAB1Theory';
 import PLAB2Theory from './pages/PLAB2Theory';
+import PLAB2Locked from './pages/PLAB2Locked';
 import TheorySubjectDetail from './pages/TheorySubjectDetail';
 import ReviseQuestionsPage from './pages/ReviseQuestionsPage';
 import AdminLogin from './pages/AdminLogin';
@@ -152,15 +153,15 @@ function AppContent() {
         <Route path="/exams/next/theory/:subjectId" element={<Navigate to="/" replace />} />
         <Route path="/exams/plab" element={<PLABMain />} />
         <Route path="/plab/what-is-plab" element={<PLABInfo />} />
-        <Route path="/plab/plab2/guide" element={<PLAB2Guide />} />
-        <Route path="/plab/plab2/practice" element={<PLAB2Pretest />} />
+        <Route path="/plab/plab2/guide" element={<PLAB2Locked />} />
+        <Route path="/plab/plab2/practice" element={<PLAB2Locked />} />
         <Route path="/plab/plab1-tips" element={<PLAB1Tips />} />
         <Route path="/plab/plab1/tests" element={<PLAB1Test />} />
         <Route path="/plab/plab1/tests/review" element={<PLAB1TestReview />} />
         <Route path="/plab/plab1/theory" element={<PLAB1Theory />} />
-        <Route path="/plab/plab2/theory" element={<PLAB2Theory />} />
+        <Route path="/plab/plab2/theory" element={<PLAB2Locked />} />
         <Route path="/plab/plab1/theory/:subjectId" element={<TheorySubjectDetail />} />
-        <Route path="/plab/plab2/theory/:subjectId" element={<TheorySubjectDetail />} />
+        <Route path="/plab/plab2/theory/:subjectId" element={<PLAB2Locked />} />
         <Route path="/theory/:subjectId" element={<TheorySubjectDetail />} />
         <Route path="/questions/:subjectId" element={<ReviseQuestionsPage />} />
         <Route path="/admin/login" element={<AdminLogin />} />
