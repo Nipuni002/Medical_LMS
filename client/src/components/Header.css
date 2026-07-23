@@ -78,23 +78,47 @@
 
 /* Light Header Navigation Styles */
 .header-light .nav a {
-  color: #1e40af;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(59, 130, 246, 0.15);
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
+  color: #475569;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  box-shadow: none;
 }
 
 .header-light .nav a:hover {
-  color: #1e3a8a;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(59, 130, 246, 0.25);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  color: #0A2463;
+  background-color: rgba(59, 130, 246, 0.06);
+  border: none;
+  box-shadow: none;
 }
 
 .header-light .nav a::before {
-  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  display: none !important;
+}
+
+/* Light theme overrides for CTA and Logout */
+.header-light .nav a.nav-cta {
+  background-color: #0A2463 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(10, 36, 99, 0.15);
+}
+
+.header-light .nav a.nav-cta:hover {
+  background-color: #2A6EBB !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 15px rgba(10, 36, 99, 0.25);
+}
+
+.header-light .nav a.nav-logout {
+  color: #dc2626 !important;
+  background-color: #fee2e2 !important;
+  border: 1px solid rgba(220, 38, 38, 0.1) !important;
+}
+
+.header-light .nav a.nav-logout:hover {
+  background-color: #fca5a5 !important;
+  color: #b91c1c !important;
 }
 
 /* Light Header Mobile Menu Button */
@@ -209,39 +233,55 @@
 }
 
 .nav a {
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
-  font-weight: 700;
-  font-size: 1.1rem;
-  padding: 0.6rem 1.2rem;
-  border-radius: 40px;
-  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
   position: relative;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.2px;
   display: inline-block;
 }
 
 .nav a:hover {
-  color: #80c1ff;
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-1px);
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .nav a::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #4da6ff, #80c1ff);
-  border-radius: 3px;
-  transition: width 0.3s ease;
+  display: none !important;
 }
 
-.nav a:hover::before {
-  width: 35px;
+/* Call to Action Button in Header */
+.nav a.nav-cta {
+  background-color: #ffffff !important;
+  color: #0A2463 !important;
+  font-weight: 700;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.15);
+}
+
+.nav a.nav-cta:hover {
+  background-color: #e6f0ff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(255, 255, 255, 0.25);
+}
+
+/* Logout link in Header */
+.nav a.nav-logout {
+  color: #f87171 !important;
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.nav a.nav-logout:hover {
+  background-color: rgba(239, 68, 68, 0.2) !important;
+  color: #fca5a5 !important;
 }
 
 .mobile-menu-btn {

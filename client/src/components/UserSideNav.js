@@ -6,7 +6,10 @@ const navGroups = [
   {
     title: 'Study Hub',
     short: 'SH',
-    items: [{ to: '/subjects', label: 'Subjects', short: 'SU' }]
+    items: [
+      { to: '/subjects', label: 'Subjects', short: 'SU' },
+      { to: '/special-notices', label: 'Special Notices', short: 'SN' }
+    ]
   },
   {
     title: 'PLAB',

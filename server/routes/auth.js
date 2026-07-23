@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const { sendLoginConfirmationEmail } = require('../utils/email');
+const { sendLoginConfirmationEmail, sendWelcomeEmail } = require('../utils/email');
 const { protect, authorize } = require('../middleware/auth');
 
 // Generate JWT Token
@@ -90,6 +90,15 @@ router.post('/register', async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
+    // Validate email format
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (!email || !emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide a valid email address'
+      });
+    }
+
     // Check if user exists
     const userExists = await User.findOne({ email });
 
@@ -120,6 +129,14 @@ router.post('/register', async (req, res) => {
         email: user.email,
         role: user.role
       }
+    });
+
+    // Send welcome email asynchronously
+    sendWelcomeEmail({
+      to: user.email,
+      name: user.name
+    }).catch((emailError) => {
+      console.error('Welcome email sending failed:', emailError.message);
     });
   } catch (error) {
     res.status(400).json({

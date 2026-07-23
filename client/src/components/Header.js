@@ -7,6 +7,16 @@ function Header() {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    } else {
+      setUser(null);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -82,6 +92,12 @@ function Header() {
             <li><a href="#home" onClick={(e) => handleNavClick(e, '#home')}>Home</a></li>
             <li><a href="#about" onClick={(e) => handleNavClick(e, '#about')}>About Us</a></li>
             <li><a href="#contact" onClick={(e) => handleNavClick(e, '#contact')}>Contact Us</a></li>
+            <li><a href="/special-notices" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate('/special-notices'); }}>Special Notices</a></li>
+            {user ? (
+              <li><a href="#logout" className="nav-logout" onClick={(e) => { e.preventDefault(); localStorage.removeItem('token'); localStorage.removeItem('user'); setUser(null); navigate('/'); }}>Logout ({user.name})</a></li>
+            ) : (
+              <li><a href="/special-notices" className="nav-cta" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate('/special-notices'); }}>Login/Register</a></li>
+            )}
           </ul>
         </nav>
       </div>
