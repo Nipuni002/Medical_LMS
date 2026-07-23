@@ -1,0 +1,152 @@
+.plab2-locked-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #F0F8FF 0%, #E6F3FF 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.plab2-locked-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  margin-top: 80px; /* Space for the header */
+}
+
+.plab2-locked-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(230, 243, 255, 0.8);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(10, 36, 99, 0.08);
+  padding: 40px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.plab2-locked-card:hover {
+  transform: translateY(-5px);
+}
+
+.lock-icon-container {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 24px;
+  background-color: #FEE2E2;
+  color: #EF4444;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: lockPulse 2s infinite;
+}
+
+.lock-svg {
+  width: 40px;
+  height: 40px;
+}
+
+.locked-title {
+  color: #0A2463;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.locked-subtitle {
+  color: #4CA1D5;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.locked-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #E2E8F0, transparent);
+  margin-bottom: 24px;
+}
+
+.locked-description {
+  color: #4A5568;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.locked-notice-box {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+  border: 1px solid #FCD34D;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 30px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.locked-notice-box .notice-icon {
+  font-size: 1.2rem;
+  margin-top: 2px;
+}
+
+.locked-notice-box p {
+  color: #B45309;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 600;
+}
+
+.back-to-plab-btn {
+  background-color: #0A2463;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(10, 36, 99, 0.15);
+}
+
+.back-to-plab-btn:hover {
+  background-color: #2A6EBB;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(10, 36, 99, 0.2);
+}
+
+@keyframes lockPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+@media (max-width: 480px) {
+  .plab2-locked-card {
+    padding: 24px;
+  }
+  .locked-title {
+    font-size: 1.5rem;
+  }
+  .locked-subtitle {
+    font-size: 0.95rem;
+  }
+}

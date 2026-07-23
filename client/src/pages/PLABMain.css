@@ -237,6 +237,52 @@
   font-weight: 600;
 }
 
+/* Yellow notice style for PLAB 2 */
+.plab-card-notice.highlighted-yellow {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%) !important;
+  border: 1px solid #FCD34D !important;
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.15);
+}
+
+.plab-card-notice.highlighted-yellow p {
+  color: #B45309 !important;
+}
+
+/* Locked Section Card styling */
+.plab-section-card.locked {
+  opacity: 0.85;
+}
+
+.plab-section-card.locked:hover {
+  transform: none !important;
+  box-shadow: 0 6px 20px rgba(10, 36, 99, 0.1) !important;
+}
+
+/* Lock Badge in Title */
+.lock-badge {
+  background-color: #EF4444;
+  color: white;
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+}
+
+/* Disabled/Locked buttons */
+.plab-button.disabled {
+  background-color: #E2E8F0 !important;
+  color: #94A3B8 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+  pointer-events: none;
+}
+
 /* Small Compact Buttons */
 .plab-section-buttons {
   padding: 0 15px 15px;

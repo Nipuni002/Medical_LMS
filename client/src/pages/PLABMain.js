@@ -41,6 +41,7 @@ function PLABMain() {
       color: '#0A2463',
       accentColor: '#4CA1D5',
       path: '/plab/plab2',
+      locked: true,
       description: 'Prepare for the 16-station OSCE exam with clinical scenario simulations, communication skills training, and practical assessment guidance.',
       notice: 'PLAB 2 Content is currently under active construction by our medical educators. Stay tuned for early access opportunities soon!',
       buttons: [
@@ -89,11 +90,11 @@ function PLABMain() {
             {/* Sections Grid */}
             <div className="plab-sections-grid">
               {sections.map((section) => {
-                const isClickable = !section.buttons;
+                const isClickable = !section.buttons && !section.locked;
                 return (
                   <div 
                     key={section.id} 
-                    className={`plab-section-card ${isClickable ? 'clickable' : ''}`}
+                    className={`plab-section-card ${isClickable ? 'clickable' : ''} ${section.locked ? 'locked' : ''}`}
                     onClick={isClickable ? () => handleSectionClick(section.path) : undefined}
                     style={{ 
                       borderLeft: `4px solid ${section.accentColor}`,
@@ -113,7 +114,10 @@ function PLABMain() {
                       {section.id === 3 && '🏥'}
                     </div>
                     <div className="card-title-container">
-                      <h3>{section.title}</h3>
+                      <div className="card-title-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <h3>{section.title}</h3>
+                        {section.locked && <span className="lock-badge">🔒 Locked</span>}
+                      </div>
                       <p className="card-subtitle">{section.subtitle}</p>
                     </div>
                   </div>
@@ -130,7 +134,7 @@ function PLABMain() {
                   </div>
 
                   {section.notice && (
-                    <div className="plab-card-notice">
+                    <div className={`plab-card-notice ${section.id === 3 ? 'highlighted-yellow' : ''}`}>
                       <p>{section.notice}</p>
                     </div>
                   )}
@@ -140,14 +144,15 @@ function PLABMain() {
                       {section.buttons.map((button, index) => (
                         <button 
                           key={index}
-                          className="plab-button"
+                          className={`plab-button ${section.locked ? 'disabled' : ''}`}
                           style={{ 
-                            backgroundColor: button.color,
+                            backgroundColor: section.locked ? '#CBD5E0' : button.color,
                             color: 'white'
                           }}
-                          onClick={(e) => handleButtonClick(section.path, button.path, e)}
+                          disabled={section.locked}
+                          onClick={(e) => !section.locked && handleButtonClick(section.path, button.path, e)}
                         >
-                          {button.label}
+                          {section.locked ? `🔒 ${button.label}` : button.label}
                         </button>
                       ))}
                     </div>
