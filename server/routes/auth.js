@@ -234,4 +234,51 @@ router.get('/test-email', async (req, res) => {
   }
 });
 
+// @route   POST /api/auth/forgotpassword
+// @desc    Forgot password (Direct reset without email link)
+// @access  Public
+router.post('/forgotpassword', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide email and new password'
+      });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'There is no user with that email address'
+      });
+    }
+
+    // Check if user is an admin
+    if (user.role === 'admin') {
+      return res.status(403).json({
+        success: false,
+        error: 'Password reset is not permitted for administrator accounts. Please contact support.'
+      });
+    }
+
+    // Directly set new password (triggering mongoose schema encryption)
+    user.password = password;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password reset successfully!'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;

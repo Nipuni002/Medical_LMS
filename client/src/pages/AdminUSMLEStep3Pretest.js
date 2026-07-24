@@ -62,6 +62,7 @@ function AdminUSMLEStep3Pretest() {
   });
 
   const [questionForm, setQuestionForm] = useState(EMPTY_QUESTION);
+  const [bulkOptionsText, setBulkOptionsText] = useState('');
 
   const optionKeys = useMemo(() => ['A', 'B', 'C', 'D', 'E'], []);
   const totalQuestions = formData.questions.length;
@@ -210,6 +211,43 @@ function AdminUSMLEStep3Pretest() {
     return true;
   };
 
+  const parseBulkOptions = (text) => {
+    const options = {};
+    optionKeys.forEach(k => options[k] = '');
+    if (!text || !text.trim()) return options;
+
+    const lines = text.split('\n').map((line) => line.trim()).filter((line) => line.length > 0);
+    let prefixMatched = false;
+    const prefixRegexStr = `^([${optionKeys.join('')}])[\\.\\)\\-\\s\\:]\\s*(.*)$`;
+    const regex = new RegExp(prefixRegexStr, 'i');
+
+    for (const line of lines) {
+      if (regex.test(line)) {
+        prefixMatched = true;
+        break;
+      }
+    }
+
+    if (prefixMatched) {
+      lines.forEach((line) => {
+        const match = line.match(regex);
+        if (match) {
+          const key = match[1].toUpperCase();
+          const content = match[2].trim();
+          if (options.hasOwnProperty(key)) {
+            options[key] = options[key] ? options[key] + ' ' + content : content;
+          }
+        }
+      });
+    } else {
+      for (let i = 0; i < Math.min(lines.length, optionKeys.length); i++) {
+        options[optionKeys[i]] = lines[i];
+      }
+    }
+
+    return options;
+  };
+
   const handleAddOrUpdateQuestion = () => {
     if (!validateQuestionForm()) {
       return;
@@ -227,11 +265,13 @@ function AdminUSMLEStep3Pretest() {
 
     setFormData((prev) => ({ ...prev, questions: updatedQuestions }));
     setQuestionForm(EMPTY_QUESTION);
+    setBulkOptionsText('');
     setEditingIndex(null);
   };
 
   const handleEditQuestion = (index) => {
     setQuestionForm({ ...formData.questions[index] });
+    setBulkOptionsText('');
     setEditingIndex(index);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -260,6 +300,7 @@ function AdminUSMLEStep3Pretest() {
 
     if (editingIndex === index) {
       setQuestionForm(EMPTY_QUESTION);
+      setBulkOptionsText('');
       setEditingIndex(null);
     } else if (editingIndex !== null && editingIndex > index) {
       setEditingIndex((prev) => prev - 1);
@@ -286,6 +327,7 @@ function AdminUSMLEStep3Pretest() {
 
   const handleCancelEdit = () => {
     setQuestionForm(EMPTY_QUESTION);
+    setBulkOptionsText('');
     setEditingIndex(null);
   };
 
@@ -557,6 +599,35 @@ function AdminUSMLEStep3Pretest() {
               value={questionForm.questionText}
               onChange={handleQuestionFieldChange}
               placeholder="Write question stem"
+            />
+          </div>
+
+          <div className="admin-tests-form-group">
+            <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>Paste options at once</span>
+              <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'normal' }}>
+                Format: A. content (or one option per line)
+              </span>
+            </label>
+            <textarea
+              rows={3}
+              value={bulkOptionsText}
+              placeholder={optionKeys.map(k => `${k}. Option ${k} text`).join('\n')}
+              onChange={(e) => {
+                const val = e.target.value;
+                setBulkOptionsText(val);
+                const parsed = parseBulkOptions(val);
+                setQuestionForm((prev) => {
+                  const updated = { ...prev };
+                  optionKeys.forEach((key) => {
+                    if (parsed[key] !== undefined) {
+                      updated[`option${key}`] = parsed[key] || prev[`option${key}`];
+                    }
+                  });
+                  return updated;
+                });
+              }}
+              style={{ fontSize: '0.9rem', fontFamily: 'monospace' }}
             />
           </div>
 
