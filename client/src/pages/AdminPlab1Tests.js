@@ -43,6 +43,7 @@ const AdminPlab1Tests = () => {
     questions: []
   });
   const [questionForm, setQuestionForm] = useState(EMPTY_QUESTION);
+  const [bulkOptionsText, setBulkOptionsText] = useState('');
 
   const optionKeys = useMemo(() => ['A', 'B', 'C', 'D', 'E'], []);
   const totalQuestions = formData.questions.length;
@@ -204,6 +205,42 @@ const AdminPlab1Tests = () => {
     return true;
   };
 
+  const parseBulkOptions = (text) => {
+    const options = { A: '', B: '', C: '', D: '', E: '' };
+    if (!text || !text.trim()) return options;
+
+    const lines = text.split('\n').map((line) => line.trim()).filter((line) => line.length > 0);
+    let prefixMatched = false;
+    const regex = /^([A-E])[\.\)\-\s\:]\s*(.*)$/i;
+
+    for (const line of lines) {
+      if (regex.test(line)) {
+        prefixMatched = true;
+        break;
+      }
+    }
+
+    if (prefixMatched) {
+      lines.forEach((line) => {
+        const match = line.match(regex);
+        if (match) {
+          const key = match[1].toUpperCase();
+          const content = match[2].trim();
+          if (options.hasOwnProperty(key)) {
+            options[key] = options[key] ? options[key] + ' ' + content : content;
+          }
+        }
+      });
+    } else {
+      const keys = ['A', 'B', 'C', 'D', 'E'];
+      for (let i = 0; i < Math.min(lines.length, keys.length); i++) {
+        options[keys[i]] = lines[i];
+      }
+    }
+
+    return options;
+  };
+
   const handleAddOrUpdateQuestion = () => {
     if (!validateQuestionForm()) {
       return;
@@ -221,11 +258,13 @@ const AdminPlab1Tests = () => {
 
     setFormData((prev) => ({ ...prev, questions: updatedQuestions }));
     setQuestionForm(EMPTY_QUESTION);
+    setBulkOptionsText('');
     setEditingIndex(null);
   };
 
   const handleEditQuestion = (index) => {
     setQuestionForm({ ...formData.questions[index] });
+    setBulkOptionsText('');
     setEditingIndex(index);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -242,6 +281,7 @@ const AdminPlab1Tests = () => {
 
         if (editingIndex === index) {
           setQuestionForm(EMPTY_QUESTION);
+          setBulkOptionsText('');
           setEditingIndex(null);
         }
 
@@ -252,6 +292,7 @@ const AdminPlab1Tests = () => {
 
   const handleCancelEdit = () => {
     setQuestionForm(EMPTY_QUESTION);
+    setBulkOptionsText('');
     setEditingIndex(null);
   };
 
@@ -420,6 +461,34 @@ const AdminPlab1Tests = () => {
               value={questionForm.questionText}
               onChange={handleQuestionFieldChange}
               placeholder="Write the clinical scenario and question"
+            />
+          </div>
+
+          <div className="admin-tests-form-group">
+            <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>Paste options (A to E) at once</span>
+              <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'normal' }}>
+                Format: A. content (or one option per line)
+              </span>
+            </label>
+            <textarea
+              rows={3}
+              value={bulkOptionsText}
+              placeholder="A. Option A text&#10;B. Option B text&#10;C. Option C text&#10;D. Option D text&#10;E. Option E text"
+              onChange={(e) => {
+                const val = e.target.value;
+                setBulkOptionsText(val);
+                const parsed = parseBulkOptions(val);
+                setQuestionForm((prev) => ({
+                  ...prev,
+                  optionA: parsed.A || prev.optionA,
+                  optionB: parsed.B || prev.optionB,
+                  optionC: parsed.C || prev.optionC,
+                  optionD: parsed.D || prev.optionD,
+                  optionE: parsed.E || prev.optionE
+                }));
+              }}
+              style={{ fontSize: '0.9rem', fontFamily: 'monospace' }}
             />
           </div>
 

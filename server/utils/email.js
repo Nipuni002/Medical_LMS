@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const https = require('https');
 
 const createTransporter = () => {
   const host = process.env.SMTP_HOST;
@@ -17,8 +18,96 @@ const createTransporter = () => {
     auth: {
       user,
       pass
-    }
+    },
+    tls: {
+      // Do not fail on invalid/self-signed certs (useful on some cloud hosting providers)
+      rejectUnauthorized: false
+    },
+    connectionTimeout: 10000, // 10 seconds timeout to prevent hanging in serverless environments
+    greetingTimeout: 10000,
+    socketTimeout: 15000
   });
+};
+
+const sendEmailViaResend = ({ to, subject, text, html }) => {
+  return new Promise((resolve, reject) => {
+    const apiKey = process.env.RESEND_API_KEY;
+    const fromAddress = process.env.EMAIL_FROM || 'onboarding@resend.dev';
+    
+    console.log(`[Email] Sending via Resend API to ${to}...`);
+    
+    const postData = JSON.stringify({
+      from: fromAddress,
+      to: [to],
+      subject: subject,
+      text: text,
+      html: html
+    });
+
+    const options = {
+      hostname: 'api.resend.com',
+      port: 443,
+      path: '/emails',
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let body = '';
+      res.on('data', (chunk) => body += chunk);
+      res.on('end', () => {
+        try {
+          const responseData = JSON.parse(body);
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            console.log('[Email] Email sent successfully via Resend API:', responseData.id);
+            resolve(responseData);
+          } else {
+            reject(new Error(responseData.message || `HTTP Status ${res.statusCode}`));
+          }
+        } catch (e) {
+          reject(new Error(`Failed to parse response: ${body}`));
+        }
+      });
+    });
+
+    req.on('error', (e) => {
+      reject(e);
+    });
+
+    req.write(postData);
+    req.end();
+  });
+};
+
+const sendMailHelper = async ({ to, subject, text, html }) => {
+  // If RESEND_API_KEY is configured, try Resend (HTTP based, avoids SMTP port blocking in cloud envs like Railway/Vercel)
+  if (process.env.RESEND_API_KEY) {
+    try {
+      return await sendEmailViaResend({ to, subject, text, html });
+    } catch (resendError) {
+      console.error('[Email] Resend API failed. Falling back to SMTP if configured:', resendError.message);
+    }
+  }
+
+  // Fallback to standard SMTP
+  console.log(`[Email] Attempting to send email via SMTP to ${to}...`);
+  const transporter = createTransporter();
+  const fromAddress = process.env.EMAIL_FROM || process.env.SMTP_USER;
+
+  const result = await transporter.sendMail({
+    from: fromAddress,
+    to,
+    subject,
+    text,
+    html
+  });
+
+  console.log('[Email] Email sent successfully via SMTP:', result.messageId);
+  return result;
 };
 
 const sendLoginConfirmationEmail = async ({
@@ -29,10 +118,7 @@ const sendLoginConfirmationEmail = async ({
   ipAddress,
   userAgent
 }) => {
-  const transporter = createTransporter();
-
   const appName = process.env.APP_NAME || 'Medical LMS';
-  const fromAddress = process.env.EMAIL_FROM || process.env.SMTP_USER;
   const safeName = name || 'User';
 
   const text = [
@@ -63,8 +149,7 @@ const sendLoginConfirmationEmail = async ({
     </div>
   `;
 
-  await transporter.sendMail({
-    from: fromAddress,
+  await sendMailHelper({
     to,
     subject: `${appName} Login Confirmation`,
     text,
@@ -73,10 +158,7 @@ const sendLoginConfirmationEmail = async ({
 };
 
 const sendWelcomeEmail = async ({ to, name }) => {
-  const transporter = createTransporter();
-
   const appName = process.env.APP_NAME || 'Medical LMS';
-  const fromAddress = process.env.EMAIL_FROM || process.env.SMTP_USER;
   const safeName = name || 'User';
 
   const text = [
@@ -109,8 +191,7 @@ const sendWelcomeEmail = async ({ to, name }) => {
     </div>
   `;
 
-  await transporter.sendMail({
-    from: fromAddress,
+  await sendMailHelper({
     to,
     subject: `Thank you for registering on ${appName}!`,
     text,

@@ -12,10 +12,18 @@ const SpecialNotices = () => {
   
   // Auth Form State
   const [isLoginTab, setIsLoginTab] = useState(true);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [forgotPasswordForm, setForgotPasswordForm] = useState({
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [forgotPasswordSuccess, setForgotPasswordSuccess] = useState('');
   const [authFormData, setAuthFormData] = useState({
     name: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
   const [authError, setAuthError] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
@@ -67,6 +75,11 @@ const SpecialNotices = () => {
       return;
     }
 
+    if (!isLoginTab && authFormData.password !== authFormData.confirmPassword) {
+      setAuthError('Passwords do not match. Please check and try again.');
+      return;
+    }
+
     setAuthLoading(true);
 
     const url = isLoginTab 
@@ -115,6 +128,63 @@ const SpecialNotices = () => {
     }
   };
 
+  const handleForgotPasswordInputChange = (e) => {
+    setForgotPasswordForm({
+      ...forgotPasswordForm,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleForgotPasswordSubmit = async (e) => {
+    e.preventDefault();
+    setAuthError('');
+    setForgotPasswordSuccess('');
+
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (!forgotPasswordForm.email || !emailRegex.test(forgotPasswordForm.email)) {
+      setAuthError('Please enter a valid email address.');
+      return;
+    }
+
+    if (forgotPasswordForm.password !== forgotPasswordForm.confirmPassword) {
+      setAuthError('Passwords do not match. Please check and try again.');
+      return;
+    }
+
+    if (forgotPasswordForm.password.length < 6) {
+      setAuthError('Password must be at least 6 characters.');
+      return;
+    }
+
+    setAuthLoading(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/forgotpassword`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: forgotPasswordForm.email,
+          password: forgotPasswordForm.password
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setForgotPasswordSuccess(data.message || 'Password reset successfully!');
+        setForgotPasswordForm({ email: '', password: '', confirmPassword: '' });
+      } else {
+        setAuthError(data.error || 'Failed to reset password.');
+      }
+    } catch (error) {
+      setAuthError('Server connection error. Please try again later.');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -142,74 +212,231 @@ const SpecialNotices = () => {
                 <p>Register or log in to view special notice boards and emergency news.</p>
               </div>
 
-              <div className="auth-tabs">
-                <button 
-                  className={`tab-btn ${isLoginTab ? 'active' : ''}`}
-                  onClick={() => { setIsLoginTab(true); setAuthError(''); }}
-                >
-                  Sign In
-                </button>
-                <button 
-                  className={`tab-btn ${!isLoginTab ? 'active' : ''}`}
-                  onClick={() => { setIsLoginTab(false); setAuthError(''); }}
-                >
-                  Sign Up
-                </button>
-              </div>
-
-              <form onSubmit={handleAuthSubmit} className="auth-form">
-                {authError && (
-                  <div className="auth-error">
-                    <span>⚠️</span> {authError}
+              {isForgotPassword ? (
+                /* Forgot Password Screen */
+                <>
+                  <div className="auth-header">
+                    <h2>Reset Password</h2>
+                    <p>Enter your email and set a new password for your account.</p>
                   </div>
-                )}
 
-                {!isLoginTab && (
-                  <div className="auth-input-group">
-                    <label htmlFor="name">Full Name</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={authFormData.name}
-                      onChange={handleAuthInputChange}
-                      placeholder="Enter your full name"
-                      required
-                    />
+                  <form onSubmit={handleForgotPasswordSubmit} className="auth-form">
+                    {authError && (
+                      <div className="auth-error">
+                        <span>⚠️</span> {authError}
+                      </div>
+                    )}
+                    {forgotPasswordSuccess && (
+                      <div className="auth-success" style={{
+                        backgroundColor: '#d1fae5',
+                        color: '#065f46',
+                        padding: '12px 16px',
+                        borderRadius: '8px',
+                        fontSize: '0.88rem',
+                        fontWeight: '600',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        border: '1px solid #a7f3d0'
+                      }}>
+                        <span>✓</span> {forgotPasswordSuccess}
+                      </div>
+                    )}
+
+                    <div className="auth-input-group">
+                      <label htmlFor="forgotEmail">Email Address</label>
+                      <input
+                        type="email"
+                        id="forgotEmail"
+                        name="email"
+                        value={forgotPasswordForm.email}
+                        onChange={handleForgotPasswordInputChange}
+                        placeholder="Enter your email address"
+                        required
+                        disabled={authLoading}
+                      />
+                    </div>
+
+                    <div className="auth-input-group">
+                      <label htmlFor="forgotPassword">New Password</label>
+                      <input
+                        type="password"
+                        id="forgotPassword"
+                        name="password"
+                        value={forgotPasswordForm.password}
+                        onChange={handleForgotPasswordInputChange}
+                        placeholder="Enter new password (min. 6 characters)"
+                        minLength="6"
+                        required
+                        disabled={authLoading}
+                      />
+                    </div>
+
+                    <div className="auth-input-group">
+                      <label htmlFor="forgotConfirmPassword">Confirm New Password</label>
+                      <input
+                        type="password"
+                        id="forgotConfirmPassword"
+                        name="confirmPassword"
+                        value={forgotPasswordForm.confirmPassword}
+                        onChange={handleForgotPasswordInputChange}
+                        placeholder="Re-enter new password"
+                        minLength="6"
+                        required
+                        disabled={authLoading}
+                      />
+                    </div>
+
+                    <button type="submit" disabled={authLoading} className="auth-submit-btn">
+                      {authLoading ? 'Please wait...' : 'Reset Password'}
+                    </button>
+
+                    <div style={{ textAlign: 'center', marginTop: '15px' }}>
+                      <button
+                        type="button"
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#0A2463',
+                          fontWeight: '600',
+                          fontSize: '0.9rem',
+                          cursor: 'pointer',
+                          textDecoration: 'underline'
+                        }}
+                        onClick={() => {
+                          setIsForgotPassword(false);
+                          setAuthError('');
+                          setForgotPasswordSuccess('');
+                          setForgotPasswordForm({ email: '', password: '', confirmPassword: '' });
+                        }}
+                      >
+                        Back to Login
+                      </button>
+                    </div>
+                  </form>
+                </>
+              ) : (
+                /* Regular Sign In / Sign Up Screen */
+                <>
+                  <div className="auth-tabs">
+                    <button 
+                      className={`tab-btn ${isLoginTab ? 'active' : ''}`}
+                      onClick={() => {
+                        setIsLoginTab(true);
+                        setAuthError('');
+                        setAuthFormData({ name: '', email: '', password: '', confirmPassword: '' });
+                      }}
+                    >
+                      Sign In
+                    </button>
+                    <button 
+                      className={`tab-btn ${!isLoginTab ? 'active' : ''}`}
+                      onClick={() => {
+                        setIsLoginTab(false);
+                        setAuthError('');
+                        setAuthFormData({ name: '', email: '', password: '', confirmPassword: '' });
+                      }}
+                    >
+                      Sign Up
+                    </button>
                   </div>
-                )}
 
-                <div className="auth-input-group">
-                  <label htmlFor="email">Email Address</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={authFormData.email}
-                    onChange={handleAuthInputChange}
-                    placeholder="Enter your email address"
-                    required
-                  />
-                </div>
+                  <form onSubmit={handleAuthSubmit} className="auth-form">
+                    {authError && (
+                      <div className="auth-error">
+                        <span>⚠️</span> {authError}
+                      </div>
+                    )}
 
-                <div className="auth-input-group">
-                  <label htmlFor="password">Password</label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={authFormData.password}
-                    onChange={handleAuthInputChange}
-                    placeholder="Enter your password (min. 6 characters)"
-                    minLength="6"
-                    required
-                  />
-                </div>
+                    {!isLoginTab && (
+                      <div className="auth-input-group">
+                        <label htmlFor="name">Full Name</label>
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          value={authFormData.name}
+                          onChange={handleAuthInputChange}
+                          placeholder="Enter your full name"
+                          required
+                        />
+                      </div>
+                    )}
 
-                <button type="submit" disabled={authLoading} className="auth-submit-btn">
-                  {authLoading ? 'Please wait...' : isLoginTab ? 'Login to Portal' : 'Register Account'}
-                </button>
-              </form>
+                    <div className="auth-input-group">
+                      <label htmlFor="email">Email Address</label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={authFormData.email}
+                        onChange={handleAuthInputChange}
+                        placeholder="Enter your email address"
+                        required
+                      />
+                    </div>
+
+                    <div className="auth-input-group">
+                      <label htmlFor="password">Password</label>
+                      <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={authFormData.password}
+                        onChange={handleAuthInputChange}
+                        placeholder="Enter your password (min. 6 characters)"
+                        minLength="6"
+                        required
+                      />
+                    </div>
+
+                    {!isLoginTab && (
+                      <div className="auth-input-group">
+                        <label htmlFor="confirmPassword">Confirm Password</label>
+                        <input
+                          type="password"
+                          id="confirmPassword"
+                          name="confirmPassword"
+                          value={authFormData.confirmPassword}
+                          onChange={handleAuthInputChange}
+                          placeholder="Re-enter your password"
+                          minLength="6"
+                          required
+                        />
+                      </div>
+                    )}
+
+                    {isLoginTab && (
+                      <div style={{ textAlign: 'right', marginTop: '-10px' }}>
+                        <button
+                          type="button"
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#64748b',
+                            fontSize: '0.85rem',
+                            fontWeight: '500',
+                            cursor: 'pointer'
+                          }}
+                          onClick={() => {
+                            setIsForgotPassword(true);
+                            setAuthError('');
+                            setForgotPasswordSuccess('');
+                          }}
+                          onMouseEnter={(e) => e.target.style.color = '#0A2463'}
+                          onMouseLeave={(e) => e.target.style.color = '#64748b'}
+                        >
+                          Forgot Password?
+                        </button>
+                      </div>
+                    )}
+
+                    <button type="submit" disabled={authLoading} className="auth-submit-btn">
+                      {authLoading ? 'Please wait...' : isLoginTab ? 'Login to Portal' : 'Register Account'}
+                    </button>
+                  </form>
+                </>
+              )}
             </div>
           </div>
         ) : (

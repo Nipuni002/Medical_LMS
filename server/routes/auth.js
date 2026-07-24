@@ -105,6 +105,16 @@ router.post('/register', async (req, res) => {
     // Create token
     const token = generateToken(user._id);
 
+    // Send welcome email (await it to prevent execution termination in serverless/hosted environments)
+    try {
+      await sendWelcomeEmail({
+        to: user.email,
+        name: user.name
+      });
+    } catch (emailError) {
+      console.error('Welcome email sending failed:', emailError.message);
+    }
+
     res.status(201).json({
       success: true,
       token,
@@ -114,14 +124,6 @@ router.post('/register', async (req, res) => {
         email: user.email,
         role: user.role
       }
-    });
-
-    // Send welcome email asynchronously
-    sendWelcomeEmail({
-      to: user.email,
-      name: user.name
-    }).catch((emailError) => {
-      console.error('Welcome email sending failed:', emailError.message);
     });
   } catch (error) {
     res.status(400).json({
@@ -196,6 +198,87 @@ router.get('/admin/dashboard', protect, authorize('admin'), (req, res) => {
       role: req.user.role
     }
   });
+});
+
+// @route   GET /api/auth/test-email
+// @desc    Test email configuration
+// @access  Public (for diagnostic troubleshooting in deployment)
+router.get('/test-email', async (req, res) => {
+  try {
+    const to = req.query.email || process.env.SMTP_USER;
+    
+    if (!to) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide a target email address in query parameter (?email=...) or set SMTP_USER'
+      });
+    }
+
+    console.log(`[Diagnostic] Attempting to send test email to: ${to}...`);
+    await sendWelcomeEmail({
+      to,
+      name: 'Diagnostic Test User'
+    });
+
+    res.json({
+      success: true,
+      message: `Test email sent successfully to ${to}!`
+    });
+  } catch (error) {
+    console.error('[Diagnostic] Test email failed:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      stack: process.env.NODE_ENV === 'production' ? undefined : error.stack
+    });
+  }
+});
+
+// @route   POST /api/auth/forgotpassword
+// @desc    Forgot password (Direct reset without email link)
+// @access  Public
+router.post('/forgotpassword', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide email and new password'
+      });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'There is no user with that email address'
+      });
+    }
+
+    // Check if user is an admin
+    if (user.role === 'admin') {
+      return res.status(403).json({
+        success: false,
+        error: 'Password reset is not permitted for administrator accounts. Please contact support.'
+      });
+    }
+
+    // Directly set new password (triggering mongoose schema encryption)
+    user.password = password;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password reset successfully!'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
 });
 
 module.exports = router;
