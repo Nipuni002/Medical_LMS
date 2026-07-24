@@ -105,6 +105,16 @@ router.post('/register', async (req, res) => {
     // Create token
     const token = generateToken(user._id);
 
+    // Send welcome email (await it to prevent execution termination in serverless/hosted environments)
+    try {
+      await sendWelcomeEmail({
+        to: user.email,
+        name: user.name
+      });
+    } catch (emailError) {
+      console.error('Welcome email sending failed:', emailError.message);
+    }
+
     res.status(201).json({
       success: true,
       token,
@@ -114,14 +124,6 @@ router.post('/register', async (req, res) => {
         email: user.email,
         role: user.role
       }
-    });
-
-    // Send welcome email asynchronously
-    sendWelcomeEmail({
-      to: user.email,
-      name: user.name
-    }).catch((emailError) => {
-      console.error('Welcome email sending failed:', emailError.message);
     });
   } catch (error) {
     res.status(400).json({
@@ -196,6 +198,40 @@ router.get('/admin/dashboard', protect, authorize('admin'), (req, res) => {
       role: req.user.role
     }
   });
+});
+
+// @route   GET /api/auth/test-email
+// @desc    Test email configuration
+// @access  Public (for diagnostic troubleshooting in deployment)
+router.get('/test-email', async (req, res) => {
+  try {
+    const to = req.query.email || process.env.SMTP_USER;
+    
+    if (!to) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide a target email address in query parameter (?email=...) or set SMTP_USER'
+      });
+    }
+
+    console.log(`[Diagnostic] Attempting to send test email to: ${to}...`);
+    await sendWelcomeEmail({
+      to,
+      name: 'Diagnostic Test User'
+    });
+
+    res.json({
+      success: true,
+      message: `Test email sent successfully to ${to}!`
+    });
+  } catch (error) {
+    console.error('[Diagnostic] Test email failed:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      stack: process.env.NODE_ENV === 'production' ? undefined : error.stack
+    });
+  }
 });
 
 module.exports = router;

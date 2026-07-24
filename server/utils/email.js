@@ -17,7 +17,14 @@ const createTransporter = () => {
     auth: {
       user,
       pass
-    }
+    },
+    tls: {
+      // Do not fail on invalid/self-signed certs (useful on some cloud hosting providers)
+      rejectUnauthorized: false
+    },
+    connectionTimeout: 10000, // 10 seconds timeout to prevent hanging in serverless environments
+    greetingTimeout: 10000,
+    socketTimeout: 15000
   });
 };
 
