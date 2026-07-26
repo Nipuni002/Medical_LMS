@@ -61,17 +61,7 @@ function Header() {
       <div className="header-container">
         <div className="logo" onClick={() => navigate('/')}>
           <div className="logo-icon">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="url(#gradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M2 17L12 22L22 17" stroke="url(#gradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M2 12L12 17L22 12" stroke="url(#gradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <defs>
-                <linearGradient id="gradient" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                  <stop stopColor={isHomePage ? "#001f5c" : "#ffffff"}/>
-                  <stop offset="1" stopColor={isHomePage ? "#0066cc" : "#e0f2fe"}/>
-                </linearGradient>
-              </defs>
-            </svg>
+            <img src="/images/logo.png" alt="Enhance Medical Education Logo" className="logo-img" />
           </div>
           <div className="logo-text">
             <span className="logo-main">
