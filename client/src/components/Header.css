@@ -8,13 +8,13 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.6rem 0;
+  padding: 0.8rem 0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .header-scrolled {
-  padding: 0.4rem 0;
+  padding: 0.5rem 0;
   background: linear-gradient(135deg, #001845 0%, #002461 50%, #003687 100%);
   box-shadow: 0 6px 30px rgba(0, 0, 0, 0.25);
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
@@ -150,8 +150,8 @@
 }
 
 .logo-icon {
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -182,7 +182,7 @@
 
 /* Pattern 5: Split with Gradient Animation (Line Removed) */
 .logo-main {
-  font-size: 1.8rem;
+  font-size: 2.10rem;
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.5px;
@@ -192,7 +192,10 @@
 }
 
 .logo-enhance {
-  color: #ff1744;
+  background: linear-gradient(90deg, #1e40af 0%, #ff0044 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   font-weight: 800;
   position: relative;
   display: inline-block;
@@ -223,12 +226,12 @@
 /* For larger screens */
 @media (min-width: 1200px) {
   .logo-main {
-    font-size: 2rem;
+    font-size: 2.40rem;
   }
   
   .logo-icon {
-    width: 50px;
-    height: 50px;
+    width: 56px;
+    height: 56px;
   }
 }
 
@@ -329,12 +332,12 @@
 
 @media (max-width: 992px) {
   .logo-main {
-    font-size: 1.6rem;
+    font-size: 1.85rem;
   }
   
   .logo-icon {
-    width: 45px;
-    height: 45px;
+    width: 48px;
+    height: 48px;
   }
   
   .nav a {
@@ -353,13 +356,13 @@
   }
 
   .logo-main {
-    font-size: 1.5rem;
+    font-size: 1.70rem;
     white-space: normal;
   }
 
   .logo-icon {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
   }
 
   .mobile-menu-btn {
@@ -437,12 +440,12 @@
   }
 
   .logo-icon {
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
   }
 
   .logo-main {
-    font-size: 1.3rem;
+    font-size: 1.45rem;
   }
   
   .nav a {
@@ -462,12 +465,12 @@
 /* Small mobile devices */
 @media (max-width: 380px) {
   .logo-main {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
   }
   
   .logo-icon {
-    width: 35px;
-    height: 35px;
+    width: 36px;
+    height: 36px;
   }
   
   .logo-enhance {
